@@ -1,0 +1,203 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-near-black: #0B0D09;
+  --color-deep-olive: #20251A;
+  --color-army-olive: #4B5320;
+  --color-muted-olive: #626744;
+  --color-khaki: #B5A878;
+  --color-coyote: #8A7655;
+  --color-off-white: #F1F0E8;
+}
+
+html {
+  scroll-behavior: smooth;
+  background-color: var(--color-near-black);
+  color: var(--color-off-white);
+  font-family: var(--font-inter), system-ui, -apple-system, sans-serif;
+  overflow-x: hidden;
+}
+
+body {
+  background-color: var(--color-near-black);
+  color: var(--color-off-white);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+::selection {
+  background-color: #B5A878;
+  color: #0B0D09;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #0B0D09;
+}
+::-webkit-scrollbar-thumb {
+  background: #20251A;
+  border: 1px solid #4B5320;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #4B5320;
+}
+
+/* Tactical Bracket Accents */
+.tactical-bracket-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tactical-bracket-btn::before {
+  content: "";
+  position: absolute;
+  top: -4px;
+  left: -4px;
+  width: 14px;
+  height: 14px;
+  border-top: 2px solid #B5A878;
+  border-left: 2px solid #B5A878;
+  pointer-events: none;
+  transition: all 0.3s ease;
+}
+
+.tactical-bracket-btn::after {
+  content: "";
+  position: absolute;
+  bottom: -4px;
+  right: -4px;
+  width: 14px;
+  height: 14px;
+  border-bottom: 2px solid #B5A878;
+  border-right: 2px solid #B5A878;
+  pointer-events: none;
+  transition: all 0.3s ease;
+}
+
+.tactical-bracket-btn:hover::before {
+  top: -6px;
+  left: -6px;
+  width: 18px;
+  height: 18px;
+  border-color: #F1F0E8;
+}
+
+.tactical-bracket-btn:hover::after {
+  bottom: -6px;
+  right: -6px;
+  width: 18px;
+  height: 18px;
+  border-color: #F1F0E8;
+}
+
+/* Chamfered Button Shapes */
+.clip-chamfer-btn {
+  clip-path: polygon(10px 0%, 100% 0%, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0% 100%, 0% 10px);
+}
+
+/* Top Chamfered Banner Notch */
+.clip-chamfer-banner-notch {
+  clip-path: polygon(
+    0% 28px,
+    calc(50% - 140px) 28px,
+    calc(50% - 110px) 0px,
+    calc(50% + 110px) 0px,
+    calc(50% + 140px) 28px,
+    100% 28px,
+    100% 100%,
+    0% 100%
+  );
+}
+
+/* Bottom Chamfered Banner Notch (for white card) */
+.clip-chamfer-bottom-notch {
+  clip-path: polygon(
+    0% 0%,
+    100% 0%,
+    100% calc(100% - 32px),
+    calc(50% + 140px) calc(100% - 32px),
+    calc(50% + 110px) 100%,
+    calc(50% - 110px) 100%,
+    calc(50% - 140px) calc(100% - 32px),
+    0% calc(100% - 32px)
+  );
+}
+
+@media (max-width: 640px) {
+  .clip-chamfer-banner-notch {
+    clip-path: polygon(
+      0% 24px,
+      calc(50% - 105px) 24px,
+      calc(50% - 85px) 0px,
+      calc(50% + 85px) 0px,
+      calc(50% + 105px) 24px,
+      100% 24px,
+      100% 100%,
+      0% 100%
+    );
+  }
+
+  .clip-chamfer-bottom-notch {
+    clip-path: polygon(
+      0% 0%,
+      100% 0%,
+      100% calc(100% - 24px),
+      calc(50% + 105px) calc(100% - 24px),
+      calc(50% + 85px) 100%,
+      calc(50% - 85px) 100%,
+      calc(50% - 105px) calc(100% - 24px),
+      0% calc(100% - 24px)
+    );
+  }
+}
+
+/* Infinite Marquee */
+@keyframes marquee {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee {
+  display: flex;
+  width: max-content;
+  animation: marquee 30s linear infinite;
+}
+
+.animate-marquee:hover {
+  animation-play-state: paused;
+}
+
+/* Texture overlays */
+.tactical-texture {
+  background-image: radial-gradient(rgba(75, 83, 32, 0.15) 1px, transparent 0),
+                    radial-gradient(rgba(181, 168, 120, 0.08) 1px, transparent 0);
+  background-position: 0 0, 8px 8px;
+  background-size: 16px 16px;
+}
+
+.subtle-camo-overlay {
+  position: relative;
+}
+.subtle-camo-overlay::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: 
+    radial-gradient(circle at 20% 30%, rgba(75, 83, 32, 0.06) 0%, transparent 40%),
+    radial-gradient(circle at 75% 65%, rgba(98, 103, 68, 0.05) 0%, transparent 45%),
+    radial-gradient(circle at 45% 85%, rgba(138, 118, 85, 0.04) 0%, transparent 35%);
+  pointer-events: none;
+  z-index: 1;
+}
