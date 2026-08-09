@@ -180,16 +180,16 @@ export default function CoachSection() {
               href="https://stageandsteelsupplements.com/"
               target="_blank"
               rel="noopener noreferrer"
-              className="block bg-white p-8 sm:p-12 transition-all duration-300 hover:shadow-glow-khaki group cursor-pointer"
+              className="block bg-white p-6 sm:p-8 md:p-10 transition-all duration-300 hover:shadow-glow-khaki group cursor-pointer"
               style={{
                 clipPath: "polygon(0 0, calc(100% - 28px) 0, 100% 28px, 100% 100%, 28px 100%, 0 calc(100% - 28px))",
               }}
             >
-              <div className="flex items-center justify-center py-2 sm:py-4">
+              <div className="flex items-center justify-center py-2 sm:py-3">
                 <img
                   src="/images/stage-and-steel.png"
                   alt="Stage & Steel Supplements"
-                  className="h-14 sm:h-20 md:h-24 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
+                  className="w-full max-w-[300px] sm:max-w-[420px] md:max-w-[480px] h-auto object-contain transition-transform duration-300 group-hover:scale-105"
                 />
               </div>
             </a>
