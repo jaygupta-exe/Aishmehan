@@ -1,5 +1,7 @@
 import { Oswald, Inter, Chakra_Petch, Caveat } from "next/font/google";
 import "./globals.css";
+import { ModalProvider } from "@/context/ModalContext";
+import ApplicationModal from "@/components/ApplicationModal";
 
 const oswald = Oswald({
   subsets: ["latin"],
@@ -56,7 +58,10 @@ export default function RootLayout({ children }) {
       className={`${oswald.variable} ${chakra.variable} ${caveat.variable} ${inter.variable}`}
     >
       <body className="bg-near-black text-off-white antialiased font-sans selection:bg-khaki selection:text-near-black">
-        {children}
+        <ModalProvider>
+          {children}
+          <ApplicationModal />
+        </ModalProvider>
       </body>
     </html>
   );

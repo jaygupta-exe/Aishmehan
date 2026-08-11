@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useModal } from "@/context/ModalContext";
 
 const transformationImages = [
   {
@@ -69,6 +70,7 @@ const transformationImages = [
 const ITEMS_PER_SLIDE = 4;
 
 export default function BeforeAfterSection() {
+  const { openApplicationModal } = useModal();
   const [currentSlide, setCurrentSlide] = useState(0);
   const [direction, setDirection] = useState(0);
   const [selectedImage, setSelectedImage] = useState(null);
@@ -327,6 +329,19 @@ export default function BeforeAfterSection() {
             <div className="relative w-12 sm:w-16 h-8 pointer-events-none hidden xs:block sm:block">
               <span className="absolute right-0 top-0 w-[2.5px] h-6 bg-white" />
               <span className="absolute right-0 bottom-0 w-10 sm:w-14 h-[2.5px] bg-white" />
+            </div>
+          </div>
+
+          {/* Bottom High-Impact CTA Button */}
+          <div className="mt-10 sm:mt-12 text-center">
+            <div className="tactical-bracket-btn inline-block">
+              <button
+                type="button"
+                onClick={openApplicationModal}
+                className="px-8 sm:px-12 py-4 bg-khaki text-near-black font-geo font-bold text-xs sm:text-sm tracking-[0.2em] uppercase clip-chamfer-btn hover:bg-off-white hover:text-near-black transition-all duration-300 shadow-glow-khaki cursor-pointer"
+              >
+                APPLY FOR YOUR TRANSFORMATION
+              </button>
             </div>
           </div>
         </div>

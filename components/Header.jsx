@@ -3,8 +3,10 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { siteData } from "@/data/siteData";
+import { useModal } from "@/context/ModalContext";
 
 export default function Header() {
+  const { openApplicationModal } = useModal();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
@@ -117,12 +119,13 @@ export default function Header() {
           {/* Right: Tactical Bracketed CTA Button */}
           <div className="flex items-center">
             <div className="tactical-bracket-btn">
-              <a
-                href={siteData.header.ctaHref}
-                className="px-4 sm:px-6 py-2 sm:py-2.5 bg-khaki text-near-black font-geo font-bold text-xs sm:text-sm tracking-widest uppercase clip-chamfer-btn hover:bg-off-white hover:text-near-black transition-all duration-200 shadow-glow-khaki"
+              <button
+                type="button"
+                onClick={openApplicationModal}
+                className="px-4 sm:px-6 py-2 sm:py-2.5 bg-khaki text-near-black font-geo font-bold text-xs sm:text-sm tracking-widest uppercase clip-chamfer-btn hover:bg-off-white hover:text-near-black transition-all duration-200 shadow-glow-khaki cursor-pointer"
               >
                 {siteData.header.ctaLabel}
-              </a>
+              </button>
             </div>
           </div>
         </div>
@@ -163,13 +166,16 @@ export default function Header() {
 
               <div className="pt-8 border-t border-muted-olive/30 flex flex-col sm:flex-row items-center justify-between gap-4">
                 <div className="tactical-bracket-btn w-full sm:w-auto">
-                  <a
-                    href={siteData.header.ctaHref}
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="w-full sm:w-auto px-8 py-3.5 text-center bg-khaki text-near-black font-geo font-bold text-sm tracking-widest uppercase clip-chamfer-btn shadow-glow-khaki block"
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setMobileMenuOpen(false);
+                      openApplicationModal();
+                    }}
+                    className="w-full sm:w-auto px-8 py-3.5 text-center bg-khaki text-near-black font-geo font-bold text-sm tracking-widest uppercase clip-chamfer-btn shadow-glow-khaki block cursor-pointer"
                   >
                     {siteData.header.ctaLabel}
-                  </a>
+                  </button>
                 </div>
                 <p className="text-xs font-mono tracking-wider text-off-white/40 uppercase">
                   {siteData.brand.tagline}

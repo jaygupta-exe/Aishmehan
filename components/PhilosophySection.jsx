@@ -2,8 +2,10 @@
 
 import { motion } from "framer-motion";
 import { Dumbbell, Flame, Activity, Brain } from "lucide-react";
+import { useModal } from "@/context/ModalContext";
 
 export default function PhilosophySection() {
+  const { openApplicationModal } = useModal();
   const healthPillars = [
     {
       title: "Build Muscle",
@@ -121,12 +123,13 @@ export default function PhilosophySection() {
           {/* GET OPTIMIZED CTA Button with Corner Brackets */}
           <div className="mb-14 sm:mb-16">
             <div className="tactical-bracket-btn inline-block">
-              <a
-                href="#apply"
-                className="px-8 sm:px-10 py-4 bg-khaki text-near-black font-geo font-bold text-sm sm:text-base tracking-[0.2em] uppercase clip-chamfer-btn hover:bg-off-white hover:text-near-black transition-all duration-300 shadow-glow-khaki inline-block"
+              <button
+                type="button"
+                onClick={openApplicationModal}
+                className="px-8 sm:px-10 py-4 bg-khaki text-near-black font-geo font-bold text-sm sm:text-base tracking-[0.2em] uppercase clip-chamfer-btn hover:bg-off-white hover:text-near-black transition-all duration-300 shadow-glow-khaki inline-block cursor-pointer"
               >
                 GET OPTIMIZED
-              </a>
+              </button>
             </div>
           </div>
 

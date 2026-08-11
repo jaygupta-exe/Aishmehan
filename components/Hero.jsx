@@ -3,8 +3,10 @@
 import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { siteData } from "@/data/siteData";
+import { useModal } from "@/context/ModalContext";
 
 export default function Hero() {
+  const { openApplicationModal } = useModal();
   const videoRef = useRef(null);
   const [videoLoaded, setVideoLoaded] = useState(false);
 
@@ -67,12 +69,13 @@ export default function Hero() {
           {/* 3. Bracketed "APPLY FOR COACHING" CTA Button */}
           <div className="mt-6 sm:mt-8 pt-2">
             <div className="tactical-bracket-btn inline-block">
-              <a
-                href={siteData.hero.primaryCta.href}
-                className="inline-flex items-center justify-center px-8 sm:px-10 py-4 sm:py-4.5 bg-khaki text-near-black font-geo font-bold text-sm sm:text-base tracking-[0.18em] uppercase clip-chamfer-btn hover:bg-off-white hover:text-near-black transition-all duration-300 shadow-glow-khaki"
+              <button
+                type="button"
+                onClick={openApplicationModal}
+                className="inline-flex items-center justify-center px-8 sm:px-10 py-4 sm:py-4.5 bg-khaki text-near-black font-geo font-bold text-sm sm:text-base tracking-[0.18em] uppercase clip-chamfer-btn hover:bg-off-white hover:text-near-black transition-all duration-300 shadow-glow-khaki cursor-pointer"
               >
                 {siteData.hero.primaryCta.label}
-              </a>
+              </button>
             </div>
           </div>
         </div>
