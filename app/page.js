@@ -4,6 +4,7 @@ import CredibilityStrip from "@/components/CredibilityStrip";
 import SupplementSection from "@/components/SupplementSection";
 import PhilosophySection from "@/components/PhilosophySection";
 import CoachSection from "@/components/CoachSection";
+import BeforeAfterSection from "@/components/BeforeAfterSection";
 
 export default function Home() {
   return (
@@ -25,6 +26,9 @@ export default function Home() {
 
       {/* 6. Coach Authority & Bio (About Divesh Mehan + Signature Brands) */}
       <CoachSection />
+
+      {/* 7. Exact BEFORE AND AFTER Transformations Grid Carousel */}
+      <BeforeAfterSection />
     </main>
   );
 }
