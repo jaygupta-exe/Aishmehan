@@ -59,11 +59,11 @@ export default function PhilosophySection() {
           {/* Offset Dark Olive / Khaki Accent Block Behind Image */}
           <div className="absolute top-8 -right-6 bottom-8 left-12 bg-deep-olive border border-muted-olive/50 z-0 pointer-events-none" />
 
-          {/* Coach Cutout Portrait with image 1.png */}
+          {/* Coach Cutout Portrait with philosophy.jpeg */}
           <div className="relative z-10 aspect-[4/5] overflow-hidden bg-near-black shadow-2xl border border-muted-olive/30">
             <img
-              src="/images/image-1.png"
-              alt="Elite Transformation Coach"
+              src="/images/philosophy.jpeg"
+              alt="Elite Transformation Coach - Aish Mehan"
               className="w-full h-full object-cover object-center"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-near-black via-transparent to-transparent opacity-60" />
