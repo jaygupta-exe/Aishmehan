@@ -1,5 +1,6 @@
 import Header from "@/components/Header";
 import Hero from "@/components/Hero";
+import JalandharWorkshop from "@/components/JalandharWorkshop";
 import CredibilityStrip from "@/components/CredibilityStrip";
 import SupplementSection from "@/components/SupplementSection";
 import PhilosophySection from "@/components/PhilosophySection";
@@ -15,19 +16,22 @@ export default function Home() {
       {/* 2. Fullscreen Video Hero with VOTED #1 TRANSFORMATION COACH */}
       <Hero />
 
-      {/* 3. FEATURED IN Notched Banner Strip */}
+      {/* 3. Jalandhar Fitness Workshop Campaign Announcement (Visible until Nov 4, 2026) */}
+      <JalandharWorkshop />
+
+      {/* 4. FEATURED IN Notched Banner Strip */}
       <CredibilityStrip />
 
-      {/* 4. Stage & Steel Supplements (Mocha Protein, Creatine & BUY NOW) */}
+      {/* 5. Stage & Steel Supplements (Mocha Protein, Creatine & BUY NOW) */}
       <SupplementSection />
 
-      {/* 5. CONTROL YOUR ENVIRONMENT & IMPROVE YOUR HEALTHSPAN with 4 Pillars */}
+      {/* 6. CONTROL YOUR ENVIRONMENT & IMPROVE YOUR HEALTHSPAN with 4 Pillars */}
       <PhilosophySection />
 
-      {/* 6. Coach Authority & Bio (About Divesh Mehan + Signature Brands) */}
+      {/* 7. Coach Authority & Bio (About Divesh Mehan + Signature Brands) */}
       <CoachSection />
 
-      {/* 7. Exact BEFORE AND AFTER Transformations Grid Carousel */}
+      {/* 8. Exact BEFORE AND AFTER Transformations Grid Carousel */}
       <BeforeAfterSection />
     </main>
   );

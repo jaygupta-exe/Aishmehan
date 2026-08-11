@@ -338,7 +338,7 @@ export default function BeforeAfterSection() {
               <button
                 type="button"
                 onClick={openApplicationModal}
-                className="px-8 sm:px-12 py-4 bg-khaki text-near-black font-geo font-bold text-xs sm:text-sm tracking-[0.2em] uppercase clip-chamfer-btn hover:bg-off-white hover:text-near-black transition-all duration-300 shadow-glow-khaki cursor-pointer"
+                className="px-8 sm:px-12 py-4 bg-khaki text-near-black font-geo font-bold text-xs sm:text-sm tracking-[0.2em] uppercase clip-chamfer-btn hover:bg-off-white hover:text-near-black transition-all duration-300 shadow-glow-khaki cursor-pointer inline-block"
               >
                 APPLY FOR YOUR TRANSFORMATION
               </button>

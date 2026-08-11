@@ -66,7 +66,7 @@ export default function Header() {
           <div className="flex items-center space-x-6">
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-2 -ml-2 text-off-white hover:text-khaki focus:outline-none flex items-center space-x-2.5 group"
+              className="p-2 -ml-2 text-off-white hover:text-khaki focus:outline-none flex items-center space-x-2.5 group cursor-pointer"
               aria-label="Toggle navigation"
             >
               <div className="w-6 h-4 flex flex-col justify-between items-start">
@@ -122,7 +122,7 @@ export default function Header() {
               <button
                 type="button"
                 onClick={openApplicationModal}
-                className="px-4 sm:px-6 py-2 sm:py-2.5 bg-khaki text-near-black font-geo font-bold text-xs sm:text-sm tracking-widest uppercase clip-chamfer-btn hover:bg-off-white hover:text-near-black transition-all duration-200 shadow-glow-khaki cursor-pointer"
+                className="px-4 sm:px-6 py-2 sm:py-2.5 bg-khaki text-near-black font-geo font-bold text-xs sm:text-sm tracking-widest uppercase clip-chamfer-btn hover:bg-off-white hover:text-near-black transition-all duration-200 shadow-glow-khaki cursor-pointer inline-block"
               >
                 {siteData.header.ctaLabel}
               </button>

@@ -1,14 +1,12 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { motion } from "framer-motion";
+import { useEffect, useRef } from "react";
 import { siteData } from "@/data/siteData";
 import { useModal } from "@/context/ModalContext";
 
 export default function Hero() {
   const { openApplicationModal } = useModal();
   const videoRef = useRef(null);
-  const [videoLoaded, setVideoLoaded] = useState(false);
 
   useEffect(() => {
     if (videoRef.current) {
@@ -38,7 +36,7 @@ export default function Hero() {
         <div className="absolute inset-0 bg-gradient-to-r from-near-black/70 via-transparent to-transparent" />
       </div>
 
-      {/* Hero Content: Instantly Visible Without Flicker */}
+      {/* Hero Content */}
       <div className="relative z-10 w-full max-w-7xl mx-auto px-5 sm:px-8 pb-20 sm:pb-24 pt-32">
         <div className="max-w-2xl">
           {/* 1. Giant "VOTED" */}

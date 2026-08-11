@@ -1,8 +1,17 @@
 /**
- * SITE DATA & PLACEHOLDER CONFIGURATION
+ * SITE DATA & CONFIGURATION
  * All content on the homepage is driven by this file.
  * The client can easily swap copy, images, program titles, and links here.
  */
+
+// Coach WhatsApp Contact Number (Owner WhatsApp)
+export const COACH_WHATSAPP_NUMBER = "919779159169";
+
+// Jalandhar Workshop Announcement Expiry Date (YYYY-MM-DD)
+export const ANNOUNCEMENT_EXPIRY = "2026-11-04";
+
+// Fallback / External Form URL if needed
+export const APPLICATION_FORM_URL = "#apply";
 
 export const siteData = {
   brand: {
@@ -44,6 +53,54 @@ export const siteData = {
       { label: "METHODOLOGY", value: "EVIDENCE-BASED" },
       { label: "INTAKE STATUS", value: "ACCEPTING CLIENTS" },
     ],
+  },
+
+  // Promotional Jalandhar Workshop Campaign (Directly below Hero)
+  jalandharWorkshop: {
+    eyebrow: "JALANDHAR FITNESS WORKSHOP",
+    headline: "FIRST-EVER FITNESS WORKSHOP IN JALANDHAR",
+    subheadline: "Learn the 5 Components of Fitness",
+    components: [
+      {
+        id: "01",
+        title: "Cardio Vascular Endurance",
+        icon: "HeartPulse",
+      },
+      {
+        id: "02",
+        title: "Muscular Strength",
+        icon: "Dumbbell",
+      },
+      {
+        id: "03",
+        title: "Muscular Endurance & Agility, Speed",
+        icon: "Zap",
+      },
+      {
+        id: "04",
+        title: "Mobility (Flexibility)",
+        icon: "Activity",
+      },
+      {
+        id: "05",
+        title: "Body Composition",
+        icon: "Scale",
+      },
+    ],
+    message:
+      "Don’t waste your hard-earned money on people without knowledge. Learn from the best with more than 15 years of experience.",
+    batch: {
+      title: "JOIN MY BATCH IN JALANDHAR",
+      count: "25",
+      countLabel: "SPOTS ONLY",
+      availabilityBadge: "LIMITED SPOTS AVAILABLE",
+      locationLabel: "LOCATION",
+      gymName: "OLD SKOOL GYM",
+      city: "JALANDHAR",
+    },
+    ctaText: "APPLY NOW →",
+    supportingText: "PRE-BOOKING CLOSES 4 NOVEMBER",
+    expiryDate: ANNOUNCEMENT_EXPIRY,
   },
 
   credibility: {
@@ -156,12 +213,12 @@ export const siteData = {
   },
 
   finalCta: {
-    eyebrow: "LIMITED CLIENT ROSTER",
+    eyebrow: "LIMITED SPOTS ROSTER",
     headline: "ARE YOU READY TO DEMAND MORE FROM YOURSELF?",
     subheadline:
-      "Client onboarding is strictly limited each month to ensure every client receives direct, daily attention from the head coach. Submit your intake application today to secure your assessment.",
+      "Coaching intake is strictly limited each month to ensure every client receives direct, daily attention from the head coach. Submit your intake application today to secure your assessment.",
     buttonLabel: "SUBMIT COACHING APPLICATION",
-    buttonHref: "#apply-form",
+    buttonHref: "#apply",
     disclaimer:
       "Applications are reviewed within 24–48 hours. Serious applicants only.",
   },
