@@ -7,6 +7,7 @@ import PhilosophySection from "@/components/PhilosophySection";
 import CoachSection from "@/components/CoachSection";
 import BeforeAfterSection from "@/components/BeforeAfterSection";
 import PricingSection from "@/components/PricingSection";
+import Footer from "@/components/Footer";
 
 export default function Home() {
   return (
@@ -37,6 +38,9 @@ export default function Home() {
 
       {/* 9. 1-on-1 Transformation Coaching Pricing & Deliverables */}
       <PricingSection />
+
+      {/* 10. Military Khaki-Notched Footer with Protein & Creatine Promo + Chamfered Socials */}
+      <Footer />
     </main>
   );
 }

@@ -304,46 +304,6 @@ export default function PricingSection() {
           </div>
         </motion.div>
       </div>
-
-      {/* ====================================================
-          4. BOTTOM NOTCHED BLUE CONTOUR ACCENT (Exact Match to Screenshot)
-         ==================================================== */}
-      <div className="w-full overflow-hidden leading-none z-20 -mb-[1px] mt-16 sm:mt-24">
-        <svg
-          viewBox="0 0 1200 56"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-          className="w-full h-10 sm:h-14 md:h-16 lg:h-20 block"
-          preserveAspectRatio="none"
-        >
-          <defs>
-            <linearGradient id="blueNotchPricingBottomEnd" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stopColor="#0B0D09" />
-              <stop offset="10%" stopColor="#002277" />
-              <stop offset="25%" stopColor="#0066FF" />
-              <stop offset="50%" stopColor="#0088FF" />
-              <stop offset="75%" stopColor="#0066FF" />
-              <stop offset="90%" stopColor="#002277" />
-              <stop offset="100%" stopColor="#0B0D09" />
-            </linearGradient>
-          </defs>
-
-          {/* Dark fill below the notch contour */}
-          <path
-            d="M0,56 L1200,56 L1200,8 L870,8 L790,46 L410,46 L330,8 L0,8 Z"
-            fill="#0B0D09"
-          />
-
-          {/* Glowing Electric Blue Notch Contour Line dipping down */}
-          <path
-            d="M-10,8 L330,8 L410,46 L790,46 L870,8 L1210,8"
-            stroke="url(#blueNotchPricingBottomEnd)"
-            strokeWidth="11"
-            strokeLinejoin="miter"
-            fill="none"
-          />
-        </svg>
-      </div>
     </section>
   );
 }
