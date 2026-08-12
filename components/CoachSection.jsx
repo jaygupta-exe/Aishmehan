@@ -100,37 +100,38 @@ export default function CoachSection() {
 
       {/* Bottom Transition Notched Banner with Full Blue Contour (Matching Kris Gethin Reference) */}
       <div className="relative w-full bg-near-black z-20 overflow-hidden">
-        {/* Top Blue Contour of the Banner */}
+        {/* Top Blue Contour of the Banner (Downward Notched Contour matching reference) */}
         <div className="w-full overflow-hidden leading-none -mt-[1px]">
           <svg
-            viewBox="0 0 1200 64"
+            viewBox="0 0 1200 56"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
-            className="w-full h-12 sm:h-16 md:h-20 block"
+            className="w-full h-10 sm:h-14 md:h-16 lg:h-20 block"
             preserveAspectRatio="none"
           >
             <defs>
               <linearGradient id="blueBlackGradientBottom" x1="0%" y1="0%" x2="100%" y2="0%">
                 <stop offset="0%" stopColor="#0B0D09" />
-                <stop offset="12%" stopColor="#001F5C" />
-                <stop offset="30%" stopColor="#0055DD" />
-                <stop offset="50%" stopColor="#0077FF" />
-                <stop offset="70%" stopColor="#0055DD" />
-                <stop offset="88%" stopColor="#001F5C" />
+                <stop offset="10%" stopColor="#002277" />
+                <stop offset="25%" stopColor="#0066FF" />
+                <stop offset="50%" stopColor="#0088FF" />
+                <stop offset="75%" stopColor="#0066FF" />
+                <stop offset="90%" stopColor="#002277" />
                 <stop offset="100%" stopColor="#0B0D09" />
               </linearGradient>
             </defs>
 
             {/* Pure White fill from About section above */}
             <path
-              d="M0,0 L1200,0 L1200,48 L850,48 L780,8 L420,8 L350,48 L0,48 Z"
+              d="M0,0 L1200,0 L1200,8 L870,8 L790,46 L410,46 L330,8 L0,8 Z"
               fill="#FFFFFF"
             />
-            {/* Thick Blue-to-Black Blend Notch Line along the entire contour */}
+
+            {/* Glowing Electric Blue Notch Contour Line dipping down */}
             <path
-              d="M-10,48 L350,48 L420,8 L780,8 L850,48 L1210,48"
+              d="M-10,8 L330,8 L410,46 L790,46 L870,8 L1210,8"
               stroke="url(#blueBlackGradientBottom)"
-              strokeWidth="12"
+              strokeWidth="11"
               strokeLinejoin="miter"
               fill="none"
             />

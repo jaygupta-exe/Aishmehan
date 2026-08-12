@@ -137,7 +137,7 @@ export default function BeforeAfterSection() {
       id="transformations"
       className="relative w-full bg-[#1C1E20] text-white pt-0 pb-0 overflow-hidden select-none"
     >
-      {/* 1. TOP NOTCHED BLUE CONTOUR ACCENT (Exact Match to Screenshot 1) */}
+      {/* 1. TOP NOTCHED BLUE CONTOUR ACCENT (Upward Rising Arch matching screenshot) */}
       <div className="w-full overflow-hidden leading-none z-20 -mt-[1px]">
         <svg
           viewBox="0 0 1200 56"
@@ -158,15 +158,15 @@ export default function BeforeAfterSection() {
             </linearGradient>
           </defs>
 
-          {/* Dark fill above the notch */}
+          {/* Dark fill above the arch notch */}
           <path
-            d="M0,0 L1200,0 L1200,8 L870,8 L790,46 L410,46 L330,8 L0,8 Z"
+            d="M0,0 L1200,0 L1200,48 L870,48 L790,10 L410,10 L330,48 L0,48 Z"
             fill="#0B0D09"
           />
 
-          {/* Glowing Electric Blue Notch Contour Line */}
+          {/* Glowing Electric Blue Notch Contour Line (Upward Rising Arch) */}
           <path
-            d="M-10,8 L330,8 L410,46 L790,46 L870,8 L1210,8"
+            d="M-10,48 L330,48 L410,10 L790,10 L870,48 L1210,48"
             stroke="url(#blueNotchTopGrad)"
             strokeWidth="11"
             strokeLinejoin="miter"

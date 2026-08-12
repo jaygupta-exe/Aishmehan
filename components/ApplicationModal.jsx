@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useModal } from "@/context/ModalContext";
 import { COACH_WHATSAPP_NUMBER } from "@/data/siteData";
@@ -19,22 +19,63 @@ import {
   Clock,
   MapPin,
   Flame,
+  CreditCard,
+  Check,
+  ShieldCheck,
+  Zap,
 } from "lucide-react";
 
+const PRICING_OPTIONS = [
+  {
+    id: "4-weeks",
+    name: "4 WEEKS",
+    price: "6,999",
+    numericPrice: 6999,
+    title: "Sprint Kickstart",
+    duration: "4 Weeks",
+    durationLabel: "4 WEEKS DURATION",
+    badge: null,
+    highlight: "Fat loss kickstart & diet reset",
+  },
+  {
+    id: "8-weeks",
+    name: "8 WEEKS",
+    price: "12,999",
+    numericPrice: 12999,
+    title: "Optimal Transformation",
+    duration: "8 Weeks",
+    durationLabel: "8 WEEKS DURATION",
+    badge: "MOST POPULAR",
+    highlight: "Full recomposition & muscle gain",
+  },
+  {
+    id: "12-weeks",
+    name: "12 WEEKS",
+    price: "18,999",
+    numericPrice: 18999,
+    title: "Complete Mastery",
+    duration: "12 Weeks",
+    durationLabel: "12 WEEKS DURATION",
+    badge: "BEST VALUE",
+    highlight: "Max results & lifestyle mastery",
+  },
+];
+
 export default function ApplicationModal() {
-  const { isApplicationOpen, closeApplicationModal } = useModal();
+  const { isApplicationOpen, closeApplicationModal, selectedPlan } = useModal();
   const [currentStep, setCurrentStep] = useState(1);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [copied, setCopied] = useState(false);
 
-  // Form State matching all Google Form questions from screenshots + batch timing
+  // Form State matching all questions + pricing package
   const [formData, setFormData] = useState({
-    // Step 1: Personal & Batch Selection
+    // Step 1: Package & Personal & Batch Selection
+    selectedPlan: "8-weeks",
+    batchTiming: "Morning Batch", // "Morning Batch" | "Evening Batch" | "Flexible / Either"
     fullName: "",
     email: "",
     contactNumber: "",
     ageWeightHeight: "",
-    batchTiming: "Morning Batch", // "Morning Batch" | "Evening Batch" | "Flexible / Either"
 
     // Step 2: Training & Goals
     strengthYears: "",
@@ -54,6 +95,22 @@ export default function ApplicationModal() {
     healthConditions: "",
     alcoholSmoke: "None of the above", // "Both" | "Only Alcohol" | "Only Smoke" | "None of the above"
   });
+
+  // Sync selected plan from ModalContext whenever modal opens or context state changes
+  useEffect(() => {
+    if (typeof selectedPlan === "string" && selectedPlan.trim()) {
+      const planStr = selectedPlan.trim().toLowerCase();
+      const match = PRICING_OPTIONS.find(
+        (p) => p.id === selectedPlan || planStr.includes(p.id) || planStr.includes(p.name.toLowerCase())
+      );
+      if (match) {
+        setFormData((prev) => ({
+          ...prev,
+          selectedPlan: match.id,
+        }));
+      }
+    }
+  }, [selectedPlan, isApplicationOpen]);
 
   // Lock body scroll when modal is open
   useEffect(() => {
@@ -85,6 +142,32 @@ export default function ApplicationModal() {
     }));
   };
 
+  // Current active plan object
+  const activePlan = useMemo(() => {
+    return (
+      PRICING_OPTIONS.find((p) => p.id === formData.selectedPlan) ||
+      PRICING_OPTIONS[1]
+    );
+  }, [formData.selectedPlan]);
+
+  // Slider Index (0 = 4w, 1 = 8w, 2 = 12w)
+  const currentPlanIndex = useMemo(() => {
+    const idx = PRICING_OPTIONS.findIndex((p) => p.id === formData.selectedPlan);
+    return idx >= 0 ? idx : 1;
+  }, [formData.selectedPlan]);
+
+  const handleSliderChange = (e) => {
+    const idx = parseInt(e.target.value, 10);
+    const chosen = PRICING_OPTIONS[idx];
+    if (chosen) {
+      handleChange("selectedPlan", chosen.id);
+    }
+  };
+
+  const handlePlanSelect = (planId) => {
+    handleChange("selectedPlan", planId);
+  };
+
   // WhatsApp Message Generator
   const generateWhatsAppMessage = () => {
     const foodPref =
@@ -92,9 +175,9 @@ export default function ApplicationModal() {
         ? `Other (${formData.foodOptionsOther})`
         : formData.foodOptions;
 
-    return `🔥 *NEW COACHING APPLICATION: JALANDHAR BATCH* 🔥
-📍 *LOCATION:* Old Skool Gym, Jalandhar
-⚡ *PROGRAM:* First-Ever Fitness Workshop (25 Spots Only)
+    return `🔥 *NEW COACHING APPLICATION: AISH MEHAN* 🔥
+🏆 *PROGRAM:* 1-on-1 Online Transformation Coaching
+💳 *SELECTED PACKAGE:* ${activePlan.name} - ₹${activePlan.price} INR (${activePlan.title})
 ⏰ *PREFERRED BATCH:* ${formData.batchTiming}
 
 ━━━━━━━━━━━━━━━━━━━━
@@ -189,12 +272,12 @@ export default function ApplicationModal() {
               <span className="w-2.5 h-2.5 bg-khaki rounded-full animate-pulse" />
               <div>
                 <h3 className="font-geo text-sm sm:text-base font-black tracking-widest text-off-white uppercase">
-                  JALANDHAR BATCH // INTAKE APPLICATION
+                  1-ON-1 COACHING // INTAKE APPLICATION
                 </h3>
                 <p className="text-[11px] font-mono text-khaki uppercase tracking-wider flex items-center space-x-2">
-                  <span>OLD SKOOL GYM, JALANDHAR</span>
+                  <span>HEAD COACH: DIVESH MEHAN</span>
                   <span>•</span>
-                  <span>25 SPOTS ONLY</span>
+                  <span>{activePlan.name} PROTOCOL (₹{activePlan.price} INR)</span>
                 </p>
               </div>
             </div>
@@ -217,7 +300,7 @@ export default function ApplicationModal() {
                 <div className="mb-8">
                   <div className="flex items-center justify-between text-xs font-mono tracking-wider text-off-white/60 mb-2">
                     <span className={currentStep >= 1 ? "text-khaki font-bold" : ""}>
-                      01. PERSONAL & BATCH
+                      01. PACKAGE & DETAILS
                     </span>
                     <span className={currentStep >= 2 ? "text-khaki font-bold" : ""}>
                       02. TRAINING & GOALS
@@ -239,20 +322,136 @@ export default function ApplicationModal() {
                   </div>
                 </div>
 
-                {/* STEP 1: Personal, Batch Timing & Biometrics */}
+                {/* STEP 1: Package Selection, Personal, Batch Timing & Biometrics */}
                 {currentStep === 1 && (
                   <motion.div
                     initial={{ opacity: 0, x: 20 }}
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, x: -20 }}
-                    className="space-y-5"
+                    className="space-y-6"
                   >
-                    <div className="flex items-center space-x-2 text-khaki font-geo text-sm font-bold uppercase tracking-wider mb-2">
+                    <div className="flex items-center space-x-2 text-khaki font-geo text-sm font-bold uppercase tracking-wider mb-1">
                       <User className="w-4 h-4" />
-                      <span>STEP 1: PERSONAL DETAILS & BATCH TIMING</span>
+                      <span>STEP 1: SELECT PACKAGE & ENTER DETAILS</span>
                     </div>
 
-                    {/* Preferred Batch Timing (Requested Addition) */}
+                    {/* ====================================================
+                        1. INTERACTIVE PRICING PACKAGE SLIDER & SELECTOR
+                       ==================================================== */}
+                    <div className="bg-deep-olive/80 border-2 border-khaki/60 p-4 sm:p-5 clip-chamfer-btn shadow-lg space-y-4">
+                      <div className="flex items-center justify-between">
+                        <label className="text-xs sm:text-sm font-geo font-black uppercase tracking-wider text-khaki flex items-center space-x-2">
+                          <CreditCard className="w-4 h-4 text-khaki" />
+                          <span>CHOOSE TRANSFORMATION PACKAGE *</span>
+                        </label>
+                        <span className="text-[10px] font-mono tracking-widest text-khaki bg-near-black px-2 py-0.5 border border-khaki/40 uppercase">
+                          {activePlan.badge || "DIRECT 1-ON-1"}
+                        </span>
+                      </div>
+
+                      {/* Visual Range Slider */}
+                      <div className="space-y-2 pt-1">
+                        <div className="flex items-center justify-between text-[11px] font-mono text-off-white/80">
+                          <span className="text-off-white/60">SLIDE TO SELECT DURATION:</span>
+                          <span className="text-khaki font-bold uppercase tracking-wider">
+                            {activePlan.name} (₹{activePlan.price} INR)
+                          </span>
+                        </div>
+
+                        <div className="relative flex items-center px-1">
+                          <input
+                            type="range"
+                            min="0"
+                            max="2"
+                            step="1"
+                            value={currentPlanIndex}
+                            onChange={handleSliderChange}
+                            aria-label="Select Coaching Duration"
+                            className="w-full h-2.5 bg-near-black rounded-lg appearance-none cursor-pointer accent-[#B5A878] border border-muted-olive/60 focus:outline-none"
+                          />
+                        </div>
+
+                        <div className="flex justify-between text-[10px] font-mono tracking-wider text-off-white/60 px-1">
+                          <span className={currentPlanIndex === 0 ? "text-khaki font-bold" : ""}>
+                            4 WEEKS
+                          </span>
+                          <span className={currentPlanIndex === 1 ? "text-khaki font-bold" : ""}>
+                            8 WEEKS (POPULAR)
+                          </span>
+                          <span className={currentPlanIndex === 2 ? "text-khaki font-bold" : ""}>
+                            12 WEEKS (BEST VALUE)
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* 3 Clickable Option Cards */}
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-1">
+                        {PRICING_OPTIONS.map((opt, idx) => {
+                          const isSelected = formData.selectedPlan === opt.id;
+                          return (
+                            <button
+                              key={opt.id}
+                              type="button"
+                              onClick={() => handlePlanSelect(opt.id)}
+                              className={`p-3 text-left border transition-all cursor-pointer relative flex flex-col justify-between ${
+                                isSelected
+                                  ? "bg-khaki text-near-black border-khaki shadow-glow-khaki font-bold"
+                                  : "bg-near-black/80 text-off-white border-muted-olive/50 hover:border-khaki/60"
+                              }`}
+                            >
+                              {opt.badge && (
+                                <span
+                                  className={`absolute -top-2 right-2 px-1.5 py-0.5 text-[8.5px] font-geo font-black tracking-wider uppercase ${
+                                    isSelected
+                                      ? "bg-near-black text-khaki border border-near-black"
+                                      : "bg-khaki text-near-black"
+                                  }`}
+                                >
+                                  {opt.badge}
+                                </span>
+                              )}
+                              <div>
+                                <div className="flex items-center justify-between mb-0.5">
+                                  <span
+                                    className={`font-geo text-sm font-black uppercase ${
+                                      isSelected ? "text-near-black" : "text-off-white"
+                                    }`}
+                                  >
+                                    {opt.name}
+                                  </span>
+                                </div>
+                                <div className="flex items-baseline space-x-1">
+                                  <span className="text-xs font-mono">₹</span>
+                                  <span className="text-lg font-geo font-black leading-none">
+                                    {opt.price}
+                                  </span>
+                                  <span className="text-[10px] font-mono">INR</span>
+                                </div>
+                              </div>
+                              <span
+                                className={`text-[10px] font-sans mt-2 block leading-tight ${
+                                  isSelected
+                                    ? "text-near-black/90 font-medium"
+                                    : "text-off-white/60"
+                                }`}
+                              >
+                                {opt.highlight}
+                              </span>
+                            </button>
+                          );
+                        })}
+                      </div>
+
+                      {/* Deliverables summary note */}
+                      <div className="pt-2 border-t border-muted-olive/30 text-[11px] font-mono text-khaki/90 flex items-center space-x-2">
+                        <CheckCircle2 className="w-3.5 h-3.5 flex-shrink-0 text-khaki" />
+                        <span>
+                          Includes Custom Diet (Veg/Non-Veg), Weekly Workouts, WhatsApp & Video Support.
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Preferred Batch Timing */}
                     <div className="bg-deep-olive/60 border border-khaki/40 p-4 clip-chamfer-btn">
                       <label className="block text-xs font-geo font-bold uppercase tracking-wider text-khaki mb-2 flex items-center space-x-2">
                         <Clock className="w-4 h-4" />
@@ -639,17 +838,18 @@ export default function ApplicationModal() {
 
                 <div>
                   <h4 className="font-geo text-2xl sm:text-3xl font-black text-off-white uppercase tracking-tight mb-2">
-                    APPLICATION READY FOR JALANDHAR BATCH!
+                    APPLICATION READY FOR COACHING!
                   </h4>
                   <p className="text-sm text-off-white/80 max-w-md mx-auto leading-relaxed">
-                    Your details have been formatted for the head coach. WhatsApp has been opened to send your application directly.
+                    Your details and selected package have been formatted. WhatsApp has been opened to send your application directly to Coach Divesh Mehan.
                   </p>
                 </div>
 
                 <div className="bg-deep-olive/80 border border-muted-olive/60 p-4 text-left max-w-md mx-auto text-xs font-mono text-off-white/90 space-y-1.5">
                   <p className="text-khaki font-bold uppercase">Application Summary:</p>
-                  <p>• Program: Jalandhar Batch (Old Skool Gym)</p>
+                  <p>• Package: {activePlan.name} (₹{activePlan.price} INR - {activePlan.title})</p>
                   <p>• Timing: {formData.batchTiming}</p>
+                  <p>• Applicant: {formData.fullName || "Applicant"}</p>
                   <p>• Contact: {formData.contactNumber}</p>
                   <p>• Email: {formData.email}</p>
                 </div>

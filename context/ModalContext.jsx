@@ -1,28 +1,52 @@
 "use client";
 
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
 
 const ModalContext = createContext({
   isApplicationOpen: false,
-  openApplicationModal: () => {},
+  selectedPlan: "8-weeks",
+  openApplicationModal: (plan) => {},
   closeApplicationModal: () => {},
+  setSelectedPlan: (plan) => {},
 });
 
 export function ModalProvider({ children }) {
   const [isApplicationOpen, setIsApplicationOpen] = useState(false);
+  const [selectedPlan, setSelectedPlan] = useState("8-weeks");
 
-  const openApplicationModal = () => setIsApplicationOpen(true);
-  const closeApplicationModal = () => setIsApplicationOpen(false);
+  const openApplicationModal = useCallback((plan) => {
+    if (typeof plan === "string" && plan.trim()) {
+      setSelectedPlan(plan.trim());
+    }
+    setIsApplicationOpen(true);
+  }, []);
 
-  // Global listener for hash navigation (#apply or #apply-form) and custom events
+  const closeApplicationModal = useCallback(() => {
+    setIsApplicationOpen(false);
+  }, []);
+
+  // Global listener for hash navigation (#apply or #pricing-*) and custom events
   useEffect(() => {
     const handleHashChange = () => {
-      if (window.location.hash === "#apply" || window.location.hash === "#apply-form") {
+      const hash = window.location.hash;
+      if (hash === "#apply" || hash === "#apply-form") {
+        setIsApplicationOpen(true);
+      } else if (hash === "#pricing-4weeks") {
+        setSelectedPlan("4-weeks");
+        setIsApplicationOpen(true);
+      } else if (hash === "#pricing-8weeks") {
+        setSelectedPlan("8-weeks");
+        setIsApplicationOpen(true);
+      } else if (hash === "#pricing-12weeks") {
+        setSelectedPlan("12-weeks");
         setIsApplicationOpen(true);
       }
     };
 
-    const handleCustomOpen = () => {
+    const handleCustomOpen = (event) => {
+      if (event?.detail?.plan) {
+        setSelectedPlan(event.detail.plan);
+      }
       setIsApplicationOpen(true);
     };
 
@@ -44,8 +68,10 @@ export function ModalProvider({ children }) {
     <ModalContext.Provider
       value={{
         isApplicationOpen,
+        selectedPlan,
         openApplicationModal,
         closeApplicationModal,
+        setSelectedPlan,
       }}
     >
       {children}
@@ -60,3 +86,4 @@ export function useModal() {
   }
   return context;
 }
+

@@ -6,6 +6,7 @@ import SupplementSection from "@/components/SupplementSection";
 import PhilosophySection from "@/components/PhilosophySection";
 import CoachSection from "@/components/CoachSection";
 import BeforeAfterSection from "@/components/BeforeAfterSection";
+import PricingSection from "@/components/PricingSection";
 
 export default function Home() {
   return (
@@ -33,6 +34,9 @@ export default function Home() {
 
       {/* 8. Exact BEFORE AND AFTER Transformations Grid Carousel */}
       <BeforeAfterSection />
+
+      {/* 9. 1-on-1 Transformation Coaching Pricing & Deliverables */}
+      <PricingSection />
     </main>
   );
 }
