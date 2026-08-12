@@ -148,22 +148,15 @@ export default function Footer() {
                 </p>
               </div>
 
-              {/* Discount Code & CTA */}
-              <div className="space-y-3 pt-2 border-t border-muted-olive/30">
-                <div className="flex items-center justify-between bg-near-black/80 border border-muted-olive/50 px-3 py-1.5 text-[11px] font-mono">
-                  <span className="text-off-white/70">EXCLUSIVE ONLINE DISCOUNT:</span>
-                  <span className="text-khaki font-black tracking-widest bg-deep-olive px-2 py-0.5 border border-khaki/40">
-                    CODE: AISH10
-                  </span>
-                </div>
-
+              {/* Direct Shop CTA */}
+              <div className="pt-2 border-t border-muted-olive/30">
                 <a
                   href={storeUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-full py-3 px-5 bg-khaki text-near-black font-geo font-black text-xs uppercase tracking-[0.2em] clip-chamfer-btn hover:bg-off-white transition-all duration-300 shadow-glow-khaki flex items-center justify-center space-x-2 group/btn cursor-pointer"
+                  className="w-full py-3.5 px-5 bg-khaki text-near-black font-geo font-black text-xs uppercase tracking-[0.2em] clip-chamfer-btn hover:bg-off-white transition-all duration-300 shadow-glow-khaki flex items-center justify-center space-x-2 group/btn cursor-pointer"
                 >
-                  <ShoppingBag className="w-3.5 h-3.5" />
+                  <ShoppingBag className="w-4 h-4" />
                   <span>BUY STAGE &amp; STEEL SUPPLEMENTS</span>
                   <ArrowUpRight className="w-4 h-4 transition-transform group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5" />
                 </a>
