@@ -1,3 +1,4 @@
+import Script from "next/script";
 import { Oswald, Inter, Chakra_Petch, Caveat } from "next/font/google";
 import "./globals.css";
 import { ModalProvider } from "@/context/ModalContext";
@@ -58,6 +59,23 @@ export default function RootLayout({ children }) {
       className={`${oswald.variable} ${chakra.variable} ${caveat.variable} ${inter.variable}`}
     >
       <body className="bg-near-black text-off-white antialiased font-sans selection:bg-khaki selection:text-near-black">
+        {/* Google Analytics 4 (gtag.js) */}
+        <Script
+          strategy="afterInteractive"
+          src="https://www.googletagmanager.com/gtag/js?id=G-Z8KMK88MCB"
+        />
+        <Script
+          id="google-analytics"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', 'G-Z8KMK88MCB');
+            `,
+          }}
+        />
         <ModalProvider>
           {children}
           <ApplicationModal />
