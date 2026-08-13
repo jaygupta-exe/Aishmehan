@@ -243,6 +243,9 @@ export default function Footer() {
               <a href="#about" className="hover:text-khaki transition-colors">
                 ABOUT
               </a>
+              <a href="#credentials" className="hover:text-khaki transition-colors">
+                CREDENTIALS
+              </a>
               <a href="#philosophy" className="hover:text-khaki transition-colors">
                 PHILOSOPHY
               </a>

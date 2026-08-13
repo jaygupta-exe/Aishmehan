@@ -93,7 +93,7 @@ export default function Header() {
 
             {/* Desktop Quick Nav Links */}
             <nav className="hidden lg:flex items-center space-x-6 ml-4">
-              {siteData.navigation.slice(0, 4).map((item) => (
+              {siteData.navigation.map((item) => (
                 <a
                   key={item.label}
                   href={item.href}

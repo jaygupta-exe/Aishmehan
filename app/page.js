@@ -5,6 +5,7 @@ import CredibilityStrip from "@/components/CredibilityStrip";
 import SupplementSection from "@/components/SupplementSection";
 import PhilosophySection from "@/components/PhilosophySection";
 import CoachSection from "@/components/CoachSection";
+import CertificationsSection from "@/components/CertificationsSection";
 import BeforeAfterSection from "@/components/BeforeAfterSection";
 import PricingSection from "@/components/PricingSection";
 import Footer from "@/components/Footer";
@@ -33,13 +34,16 @@ export default function Home() {
       {/* 7. Coach Authority & Bio (About Divesh Mehan + Signature Brands) */}
       <CoachSection />
 
-      {/* 8. Exact BEFORE AND AFTER Transformations Grid Carousel */}
+      {/* 8. Global Certifications & Championship Accolades (Musclemania Asia/India, ACE, ACSM, EREPS, EuropeActive) */}
+      <CertificationsSection />
+
+      {/* 9. Exact BEFORE AND AFTER Transformations Grid Carousel */}
       <BeforeAfterSection />
 
-      {/* 9. 1-on-1 Transformation Coaching Pricing & Deliverables */}
+      {/* 10. 1-on-1 Transformation Coaching Pricing & Deliverables */}
       <PricingSection />
 
-      {/* 10. Military Khaki-Notched Footer with Protein & Creatine Promo + Chamfered Socials */}
+      {/* 11. Military Khaki-Notched Footer with Protein & Creatine Promo + Chamfered Socials */}
       <Footer />
     </main>
   );
