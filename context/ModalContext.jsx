@@ -14,6 +14,11 @@ export function ModalProvider({ children }) {
   const [isApplicationOpen, setIsApplicationOpen] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState("8-weeks");
 
+  const isApplicationOpenRef = React.useRef(isApplicationOpen);
+  useEffect(() => {
+    isApplicationOpenRef.current = isApplicationOpen;
+  }, [isApplicationOpen]);
+
   const openApplicationModal = useCallback((plan) => {
     if (typeof plan === "string" && plan.trim()) {
       setSelectedPlan(plan.trim());
@@ -23,13 +28,34 @@ export function ModalProvider({ children }) {
 
   const closeApplicationModal = useCallback(() => {
     setIsApplicationOpen(false);
+    if (typeof window !== "undefined") {
+      const hash = (window.location.hash || "").toLowerCase().trim();
+      if (
+        hash === "#apply" ||
+        hash === "#apply-form" ||
+        hash.startsWith("#apply?") ||
+        hash.startsWith("#apply/") ||
+        hash.startsWith("#pricing-")
+      ) {
+        // Remove #apply hash from the URL without page reload, preserving search/UTM queries
+        const cleanUrl = window.location.pathname + window.location.search;
+        window.history.replaceState(null, "", cleanUrl);
+      }
+    }
   }, []);
 
-  // Global listener for hash navigation (#apply or #pricing-*) and custom events
+  // Global listener for hash navigation (#apply, #apply-form, #pricing-*) and custom events
   useEffect(() => {
-    const handleHashChange = () => {
-      const hash = window.location.hash;
-      if (hash === "#apply" || hash === "#apply-form") {
+    const handleHash = () => {
+      if (typeof window === "undefined") return;
+      const hash = (window.location.hash || "").toLowerCase().trim();
+
+      if (
+        hash === "#apply" ||
+        hash === "#apply-form" ||
+        hash.startsWith("#apply?") ||
+        hash.startsWith("#apply/")
+      ) {
         setIsApplicationOpen(true);
       } else if (hash === "#pricing-4weeks") {
         setSelectedPlan("4-weeks");
@@ -40,6 +66,9 @@ export function ModalProvider({ children }) {
       } else if (hash === "#pricing-12weeks") {
         setSelectedPlan("12-weeks");
         setIsApplicationOpen(true);
+      } else if (isApplicationOpenRef.current && (hash === "" || hash.startsWith("#"))) {
+        // If the user navigates away using browser back button, close the modal
+        setIsApplicationOpen(false);
       }
     };
 
@@ -50,16 +79,20 @@ export function ModalProvider({ children }) {
       setIsApplicationOpen(true);
     };
 
-    window.addEventListener("hashchange", handleHashChange);
+    window.addEventListener("hashchange", handleHash);
+    window.addEventListener("popstate", handleHash);
     window.addEventListener("open-apply-modal", handleCustomOpen);
 
-    // Check on initial load
-    if (window.location.hash === "#apply" || window.location.hash === "#apply-form") {
-      setIsApplicationOpen(true);
-    }
+    // Initial check when client components are mounted
+    handleHash();
+
+    // Safety timeout to guarantee detection on direct load & refresh across browsers
+    const timer = setTimeout(handleHash, 50);
 
     return () => {
-      window.removeEventListener("hashchange", handleHashChange);
+      clearTimeout(timer);
+      window.removeEventListener("hashchange", handleHash);
+      window.removeEventListener("popstate", handleHash);
       window.removeEventListener("open-apply-modal", handleCustomOpen);
     };
   }, []);

@@ -46,13 +46,31 @@ export default function JalandharWorkshop() {
     }
   }, [data?.expiryDate]);
 
+  // Ensure reliable scroll on direct landing or refresh with #workshop
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const hash = (window.location.hash || "").toLowerCase().trim();
+      if (hash === "#workshop" || hash === "#jalandhar-workshop") {
+        const scrollToWorkshop = () => {
+          const el = document.getElementById("workshop");
+          if (el) {
+            el.scrollIntoView({ behavior: "smooth", block: "start" });
+          }
+        };
+        scrollToWorkshop();
+        const timer = setTimeout(scrollToWorkshop, 150);
+        return () => clearTimeout(timer);
+      }
+    }
+  }, []);
+
   // If expired, automatically remove section from DOM
   if (!isVisible) return null;
 
   return (
     <section
-      id="jalandhar-workshop"
-      className="relative w-full bg-gradient-to-b from-near-black via-deep-olive/95 to-near-black text-off-white py-12 sm:py-16 lg:py-20 border-y border-muted-olive/30 shadow-2xl overflow-hidden tactical-texture"
+      id="workshop"
+      className="scroll-mt-20 sm:scroll-mt-24 relative w-full bg-gradient-to-b from-near-black via-deep-olive/95 to-near-black text-off-white py-12 sm:py-16 lg:py-20 border-y border-muted-olive/30 shadow-2xl overflow-hidden tactical-texture"
     >
       {/* Subtle Military-Inspired Backdrop Lighting */}
       <div className="absolute inset-0 pointer-events-none z-0">
