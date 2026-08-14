@@ -74,6 +74,20 @@ export default function RootLayout({ children }) {
               gtag('js', new Date());
               gtag('config', 'AW-18343832558');
               gtag('config', 'G-Z8KMK88MCB');
+
+              function gtag_report_conversion(url) {
+                var callback = function () {
+                  if (typeof(url) != 'undefined') {
+                    window.location = url;
+                  }
+                };
+                gtag('event', 'conversion', {
+                    'send_to': 'AW-18343832558/BHfICPa90-AcEO7XgqtE',
+                    'event_callback': callback
+                });
+                return false;
+              }
+              window.gtag_report_conversion = gtag_report_conversion;
             `,
           }}
         />

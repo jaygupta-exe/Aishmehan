@@ -4,6 +4,7 @@ import { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useModal } from "@/context/ModalContext";
 import { COACH_WHATSAPP_NUMBER } from "@/data/siteData";
+import { gtagReportConversion } from "@/lib/gtag";
 import {
   X,
   Send,
@@ -226,6 +227,13 @@ export default function ApplicationModal() {
     const message = generateWhatsAppMessage();
     const encodedMessage = encodeURIComponent(message);
     const whatsappUrl = `https://api.whatsapp.com/send?phone=${COACH_WHATSAPP_NUMBER}&text=${encodedMessage}`;
+
+    // Google Ads Conversion Event for Submit Lead Form
+    try {
+      gtagReportConversion();
+    } catch (err) {
+      console.warn("Conversion tracking error:", err);
+    }
 
     // Open WhatsApp in new tab
     window.open(whatsappUrl, "_blank", "noopener,noreferrer");
