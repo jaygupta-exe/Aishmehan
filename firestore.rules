@@ -1,0 +1,131 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // =========================================================================
+    // HELPER FUNCTIONS
+    // =========================================================================
+    
+    // Check if the user is signed in with Firebase Auth
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    // Check if the signed-in user has the admin role in users/{uid}
+    function isAdmin() {
+      return isAuthenticated() &&
+        exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == "admin";
+    }
+
+    // Validate incoming public lead application submissions
+    function isValidApplication(data) {
+      return
+        // Required core fields must be present
+        data.keys().hasAll([
+          'fullName',
+          'contactNumber',
+          'email',
+          'selectedPackage',
+          'packageId',
+          'status',
+          'createdAt'
+        ]) &&
+        // Only allow expected application fields (no arbitrary injected data)
+        data.keys().hasOnly([
+          'fullName',
+          'contactNumber',
+          'email',
+          'selectedPackage',
+          'packageId',
+          'batchTiming',
+          'ageWeightHeight',
+          'fitnessGoal',
+          'gymExperience',
+          'cardioHistory',
+          'strengths',
+          'weakPoints',
+          'gymTimings',
+          'activityLevel',
+          'dietPreference',
+          'dislikedFoods',
+          'weeklyMealBudget',
+          'alcoholSmoke',
+          'healthConditions',
+          'status',
+          'createdAt'
+        ]) &&
+        // Status must always initialize to "new" on public creation
+        data.status == "new" &&
+        // Data type and length validations
+        data.fullName is string && data.fullName.size() >= 1 && data.fullName.size() <= 200 &&
+        data.contactNumber is string && data.contactNumber.size() >= 5 && data.contactNumber.size() <= 50 &&
+        data.email is string && data.email.size() >= 3 && data.email.size() <= 200 &&
+        data.selectedPackage is string && data.selectedPackage.size() <= 150 &&
+        data.packageId is string && data.packageId.size() <= 50;
+    }
+
+    // =========================================================================
+    // USER ROLES & ACCESS CONTROL
+    // =========================================================================
+    
+    match /users/{userId} {
+      // Authenticated users can read their own profile to verify role; Admins can read all user profiles
+      allow read: if isAuthenticated() && (request.auth.uid == userId || isAdmin());
+      // Only verified administrators can create or update user roles
+      allow write: if isAdmin();
+    }
+
+    // =========================================================================
+    // PUBLIC SITE CONTENT (Hero, Workshop, Pricing, Brand, etc.)
+    // =========================================================================
+    
+    match /site_content/main {
+      // Public visitors can read the live public site configuration
+      allow read: if true;
+      // Only verified administrators can update the live site configuration
+      allow write: if isAdmin();
+    }
+
+    // Private Admin Configuration Document (internal notes, system preferences)
+    match /site_content/admin_config {
+      allow read, write: if isAdmin();
+    }
+
+    // Catch-all for any other site_content subdocuments
+    match /site_content/{docId} {
+      allow read: if docId == "main";
+      allow write: if isAdmin();
+    }
+
+    // =========================================================================
+    // CLIENT TRANSFORMATIONS GALLERY
+    // =========================================================================
+    
+    match /transformations/{transId} {
+      // Public visitors can view documented client transformations
+      allow read: if true;
+      // Only verified administrators can add, update, or delete transformations
+      allow write: if isAdmin();
+    }
+
+    // =========================================================================
+    // LEADS & APPLICATIONS (Sensitive Applicant Dossiers)
+    // =========================================================================
+    
+    match /applications/{applicationId} {
+      // Public visitors can submit an application with strict schema validation
+      allow create: if isValidApplication(request.resource.data);
+      // Public visitors MUST NOT be able to read, list, update, or delete applications.
+      // ONLY verified administrators can read applicant dossiers, update status/notes, or delete leads.
+      allow read, update, delete: if isAdmin();
+    }
+
+    // =========================================================================
+    // DEFAULT DENY ALL OTHER COLLECTIONS
+    // =========================================================================
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

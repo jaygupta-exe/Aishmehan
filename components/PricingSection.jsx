@@ -1,8 +1,9 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { siteData } from "@/data/siteData";
+import { siteData as fallbackSiteData } from "@/data/siteData";
 import { useModal } from "@/context/ModalContext";
+import { useSiteContent } from "@/context/DataContext";
 import {
   Check,
   Zap,
@@ -22,7 +23,8 @@ import {
 
 export default function PricingSection() {
   const { openApplicationModal } = useModal();
-  const pricingData = siteData.pricing;
+  const { content } = useSiteContent();
+  const pricingData = content?.pricing || fallbackSiteData.pricing;
 
   // Icon mapping for the 7 deliverables
   const deliverableIcons = [

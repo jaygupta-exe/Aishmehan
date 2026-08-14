@@ -2,8 +2,9 @@
 
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { siteData, ANNOUNCEMENT_EXPIRY } from "@/data/siteData";
+import { siteData as fallbackSiteData, ANNOUNCEMENT_EXPIRY } from "@/data/siteData";
 import { useModal } from "@/context/ModalContext";
+import { useSiteContent } from "@/context/DataContext";
 import {
   MapPin,
   ArrowRight,
@@ -20,8 +21,9 @@ import {
 
 export default function JalandharWorkshop() {
   const { openApplicationModal } = useModal();
+  const { content } = useSiteContent();
   const [isVisible, setIsVisible] = useState(true);
-  const data = siteData.jalandharWorkshop;
+  const data = content?.jalandharWorkshop || fallbackSiteData.jalandharWorkshop;
 
   // Icon map matching the 5 components of fitness
   const iconMap = {
@@ -32,19 +34,25 @@ export default function JalandharWorkshop() {
     Scale: Scale,
   };
 
-  // Automatic date-based expiry check using client's local date
+  // Automatic date-based expiry check & active toggle check
   useEffect(() => {
     try {
+      if (data?.isActive === false) {
+        setIsVisible(false);
+        return;
+      }
       const now = new Date();
       // Expiry is end of day (23:59:59) on ANNOUNCEMENT_EXPIRY
       const expiry = new Date(`${data?.expiryDate || ANNOUNCEMENT_EXPIRY}T23:59:59`);
       if (now > expiry) {
         setIsVisible(false);
+      } else {
+        setIsVisible(true);
       }
     } catch (e) {
       console.error("Date calculation error:", e);
     }
-  }, [data?.expiryDate]);
+  }, [data?.expiryDate, data?.isActive]);
 
   // Ensure reliable scroll on direct landing or refresh with #workshop
   useEffect(() => {

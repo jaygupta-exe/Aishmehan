@@ -1,6 +1,7 @@
 import Script from "next/script";
 import { Oswald, Inter, Chakra_Petch, Caveat } from "next/font/google";
 import "./globals.css";
+import { DataProvider } from "@/context/DataContext";
 import { ModalProvider } from "@/context/ModalContext";
 import ApplicationModal from "@/components/ApplicationModal";
 
@@ -91,10 +92,12 @@ export default function RootLayout({ children }) {
             `,
           }}
         />
-        <ModalProvider>
-          {children}
-          <ApplicationModal />
-        </ModalProvider>
+        <DataProvider>
+          <ModalProvider>
+            {children}
+            <ApplicationModal />
+          </ModalProvider>
+        </DataProvider>
       </body>
     </html>
   );

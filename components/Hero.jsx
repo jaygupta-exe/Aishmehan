@@ -1,11 +1,14 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { siteData } from "@/data/siteData";
+import { siteData as fallbackSiteData } from "@/data/siteData";
 import { useModal } from "@/context/ModalContext";
+import { useSiteContent } from "@/context/DataContext";
 
 export default function Hero() {
   const { openApplicationModal } = useModal();
+  const { content } = useSiteContent();
+  const heroData = content?.hero || fallbackSiteData.hero;
   const videoRef = useRef(null);
 
   useEffect(() => {
@@ -22,7 +25,7 @@ export default function Hero() {
       <div className="absolute inset-0 w-full h-full z-0 overflow-hidden">
         <video
           ref={videoRef}
-          src={siteData.hero.videoSrc}
+          src={heroData.videoSrc || "/hero.mp4"}
           autoPlay
           muted
           loop
@@ -39,10 +42,10 @@ export default function Hero() {
       {/* Hero Content */}
       <div className="relative z-10 w-full max-w-7xl mx-auto px-5 sm:px-8 pb-20 sm:pb-24 pt-32">
         <div className="max-w-2xl">
-          {/* 1. Giant "VOTED" */}
+          {/* 1. Giant "VOTED" / Custom Eyebrow */}
           <div className="mb-0">
             <h1 className="font-geo text-6xl sm:text-8xl md:text-9xl lg:text-[10rem] font-bold text-off-white tracking-tight uppercase leading-[0.88] drop-shadow-2xl">
-              VOTED
+              {heroData.eyebrow?.includes("VOTED") ? heroData.eyebrow : "VOTED"}
             </h1>
           </div>
 
@@ -72,7 +75,7 @@ export default function Hero() {
                 onClick={openApplicationModal}
                 className="inline-flex items-center justify-center px-8 sm:px-10 py-4 sm:py-4.5 bg-khaki text-near-black font-geo font-bold text-sm sm:text-base tracking-[0.18em] uppercase clip-chamfer-btn hover:bg-off-white hover:text-near-black transition-all duration-300 shadow-glow-khaki cursor-pointer"
               >
-                {siteData.hero.primaryCta.label}
+                {heroData.primaryCta?.label || "APPLY FOR COACHING"}
               </button>
             </div>
           </div>

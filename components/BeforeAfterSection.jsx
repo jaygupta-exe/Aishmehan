@@ -3,8 +3,9 @@
 import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useModal } from "@/context/ModalContext";
+import { useSiteContent } from "@/context/DataContext";
 
-const transformationImages = [
+const defaultTransformationImages = [
   {
     id: 1,
     src: "/images/before after 1.JPG",
@@ -71,11 +72,13 @@ const ITEMS_PER_SLIDE = 4;
 
 export default function BeforeAfterSection() {
   const { openApplicationModal } = useModal();
+  const { transformations } = useSiteContent();
   const [currentSlide, setCurrentSlide] = useState(0);
   const [direction, setDirection] = useState(0);
   const [selectedImage, setSelectedImage] = useState(null);
 
-  const totalSlides = Math.ceil(transformationImages.length / ITEMS_PER_SLIDE);
+  const imagesList = transformations && transformations.length > 0 ? transformations : defaultTransformationImages;
+  const totalSlides = Math.max(1, Math.ceil(imagesList.length / ITEMS_PER_SLIDE));
 
   const nextSlide = useCallback(() => {
     setDirection(1);
@@ -104,7 +107,7 @@ export default function BeforeAfterSection() {
   }, [nextSlide, prevSlide]);
 
   // Current batch of 4 images
-  const currentImages = transformationImages.slice(
+  const currentImages = imagesList.slice(
     currentSlide * ITEMS_PER_SLIDE,
     currentSlide * ITEMS_PER_SLIDE + ITEMS_PER_SLIDE
   );

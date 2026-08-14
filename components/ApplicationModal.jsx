@@ -3,6 +3,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useModal } from "@/context/ModalContext";
+import { useSiteContent } from "@/context/DataContext";
 import { COACH_WHATSAPP_NUMBER } from "@/data/siteData";
 import { gtagReportConversion } from "@/lib/gtag";
 import {
@@ -64,6 +65,7 @@ const PRICING_OPTIONS = [
 
 export default function ApplicationModal() {
   const { isApplicationOpen, closeApplicationModal, selectedPlan } = useModal();
+  const { saveApplicationLead, coachWhatsAppNumber } = useSiteContent();
   const [currentStep, setCurrentStep] = useState(1);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -226,7 +228,37 @@ export default function ApplicationModal() {
 
     const message = generateWhatsAppMessage();
     const encodedMessage = encodeURIComponent(message);
-    const whatsappUrl = `https://api.whatsapp.com/send?phone=${COACH_WHATSAPP_NUMBER}&text=${encodedMessage}`;
+    const phoneToUse = coachWhatsAppNumber || COACH_WHATSAPP_NUMBER;
+    const whatsappUrl = `https://api.whatsapp.com/send?phone=${phoneToUse}&text=${encodedMessage}`;
+
+    // Auto-record lead in CMS & Firestore
+    try {
+      if (saveApplicationLead) {
+        saveApplicationLead({
+          fullName: formData.fullName || "Website Applicant",
+          contactNumber: formData.contactNumber,
+          email: formData.email,
+          selectedPackage: `${activePlan.name} (₹${activePlan.price} - ${activePlan.title})`,
+          packageId: activePlan.id,
+          batchTiming: formData.batchTiming,
+          ageWeightHeight: formData.ageWeightHeight,
+          fitnessGoal: formData.specificGoal,
+          gymExperience: formData.strengthYears,
+          cardioHistory: formData.cardioHistory,
+          strengths: formData.strengths,
+          weakPoints: formData.weakPoints,
+          gymTimings: formData.gymTimings,
+          activityLevel: formData.activityLevel,
+          dietPreference: `${formData.foodOptions} (${formData.mealsPerDay} meals)`,
+          dislikedFoods: formData.dislikedFoods,
+          weeklyMealBudget: formData.weeklyMealBudget,
+          alcoholSmoke: formData.alcoholSmoke,
+          healthConditions: formData.healthConditions,
+        });
+      }
+    } catch (e) {
+      console.warn("Lead save error:", e);
+    }
 
     // Google Ads Conversion Event for Submit Lead Form
     try {
