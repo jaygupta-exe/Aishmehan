@@ -59,19 +59,20 @@ export default function RootLayout({ children }) {
       className={`${oswald.variable} ${chakra.variable} ${caveat.variable} ${inter.variable}`}
     >
       <body className="bg-near-black text-off-white antialiased font-sans selection:bg-khaki selection:text-near-black">
-        {/* Google Analytics 4 (gtag.js) */}
+        {/* Google tag (gtag.js) - Google Ads & Google Analytics */}
         <Script
           strategy="afterInteractive"
-          src="https://www.googletagmanager.com/gtag/js?id=G-Z8KMK88MCB"
+          src="https://www.googletagmanager.com/gtag/js?id=AW-18343832558"
         />
         <Script
-          id="google-analytics"
+          id="google-tag-init"
           strategy="afterInteractive"
           dangerouslySetInnerHTML={{
             __html: `
               window.dataLayer = window.dataLayer || [];
               function gtag(){dataLayer.push(arguments);}
               gtag('js', new Date());
+              gtag('config', 'AW-18343832558');
               gtag('config', 'G-Z8KMK88MCB');
             `,
           }}
