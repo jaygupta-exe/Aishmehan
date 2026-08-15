@@ -195,7 +195,7 @@ export default function CertificationsSection() {
                       <div className="absolute inset-0 bg-near-black/70 opacity-0 group-hover/img:opacity-100 transition-opacity duration-200 flex flex-col items-center justify-center p-3 text-center">
                         <ZoomIn className="w-8 h-8 text-khaki mb-2 animate-bounce" />
                         <span className="font-geo text-xs font-black tracking-widest text-off-white uppercase bg-near-black/90 px-3 py-1.5 border border-khaki/60">
-                          INSPECT FULL CERTIFICATE
+                          {item.category === "championship" ? "INSPECT CHAMPIONSHIP RECORD" : "INSPECT FULL CERTIFICATE"}
                         </span>
                       </div>
                     </div>
@@ -236,7 +236,11 @@ export default function CertificationsSection() {
                       onClick={() => setSelectedCert(item)}
                       className="w-full py-2.5 px-4 bg-deep-olive border border-muted-olive/60 hover:border-khaki hover:bg-near-black text-off-white font-geo font-bold text-xs uppercase tracking-widest clip-chamfer-btn transition-all duration-200 flex items-center justify-center space-x-2 cursor-pointer group/btn"
                     >
-                      <span>VIEW OFFICIAL CREDENTIAL</span>
+                      <span>
+                        {item.category === "championship"
+                          ? "VIEW CHAMPIONSHIP RECORD"
+                          : "VIEW OFFICIAL CREDENTIAL"}
+                      </span>
                       <ZoomIn className="w-3.5 h-3.5 text-khaki transition-transform duration-200 group-hover/btn:scale-125" />
                     </button>
                   </div>
@@ -313,7 +317,9 @@ export default function CertificationsSection() {
                   <span className="w-2.5 h-2.5 bg-khaki rounded-full animate-pulse" />
                   <div>
                     <h3 className="font-geo text-sm sm:text-base font-black tracking-wider text-off-white uppercase">
-                      OFFICIAL CERTIFICATE // VERIFICATION RECORD
+                      {selectedCert.category === "championship"
+                        ? "CHAMPIONSHIP TITLE // RECORD OF EXCELLENCE"
+                        : "OFFICIAL CERTIFICATE // VERIFICATION RECORD"}
                     </h3>
                     <p className="text-[11px] font-mono text-khaki uppercase tracking-wider">
                       {selectedCert.organization} • {selectedCert.regNo}
@@ -342,7 +348,9 @@ export default function CertificationsSection() {
                     />
                     <div className="mt-2 text-center">
                       <span className="text-[10px] font-mono text-off-white/40 tracking-widest uppercase">
-                        ORIGINAL HIGH-RESOLUTION VERIFIED DOCUMENT
+                        {selectedCert.category === "championship"
+                          ? "OFFICIAL CHAMPIONSHIP GOLD INSIGNIA & RECORD"
+                          : "ORIGINAL HIGH-RESOLUTION VERIFIED DOCUMENT"}
                       </span>
                     </div>
                   </div>

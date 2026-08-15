@@ -11,11 +11,15 @@ service cloud.firestore {
       return request.auth != null;
     }
 
-    // Check if the signed-in user has the admin role in users/{uid}
+    // Check if the signed-in user has the admin role in users/{uid} or is the primary owner
     function isAdmin() {
-      return isAuthenticated() &&
-        exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
-        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == "admin";
+      return isAuthenticated() && (
+        (
+          exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+          get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == "admin"
+        ) ||
+        request.auth.token.email == "aishfitness8@gmail.com"
+      );
     }
 
     // Validate incoming public lead application submissions

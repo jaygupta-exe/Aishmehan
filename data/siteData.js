@@ -275,12 +275,32 @@ export const siteData = {
     subheadline:
       "Every protocol is backed by internationally accredited governing bodies, sports science qualifications, and natural bodybuilding championship titles.",
     stats: [
-      { label: "CHAMPIONSHIP TITLES", value: "2X CHAMPION", desc: "Musclemania Asia & India" },
+      { label: "CHAMPIONSHIP TITLES", value: "3X CHAMPION", desc: "NPC Miami & Musclemania" },
       { label: "GLOBAL ACCREDITATION", value: "EQF LEVEL 4", desc: "EREPS & EuropeActive" },
       { label: "SPECIALIZATION", value: "ACE & ACSM", desc: "Posture & Corrective Exercise" },
       { label: "PRACTICE STANDARDS", value: "ISO COMPLIANT", desc: "9001 / 14001 / 45001" },
     ],
     items: [
+      {
+        id: "npc-miami-usa-champion",
+        category: "championship",
+        categoryLabel: "CHAMPIONSHIP TITLE",
+        badgeText: "3X USA CHAMPION",
+        badgeColor: "gold",
+        title: "3-Time Champion — NPC Miami, USA",
+        organization: "National Physique Committee (NPC) USA",
+        credential: "3-Time Championship Titleholder — NPC Miami, Florida (USA)",
+        date: "USA National Circuit",
+        issuingAuthority: "National Physique Committee (NPC) Florida / USA",
+        regNo: "NPC-USA-MIA-3X",
+        image: "/images/npc-miami-champion.jpg",
+        highlights: [
+          "3-Time 1st Place Gold Medal Champion at NPC Miami, USA",
+          "Competitive Bodybuilding Stage Titleholder in the United States",
+          "100% Lifetime Natural Physique & Drug-Free Standard",
+        ],
+        verificationNote: "Official 3-Time NPC Miami, USA Championship Competitive Record",
+      },
       {
         id: "musclemania-asia-2022",
         category: "championship",

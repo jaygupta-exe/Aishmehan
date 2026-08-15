@@ -8,7 +8,7 @@ import {
   signOut as firebaseSignOut,
   onAuthStateChanged,
 } from "firebase/auth";
-import { doc, getDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc } from "firebase/firestore";
 
 const AdminAuthContext = createContext(null);
 
@@ -22,7 +22,7 @@ export function AdminAuthProvider({ children }) {
 
   // Verify whether the Firebase-authenticated user has the "admin" role in Firestore users/{uid}
   const verifyAdminRole = useCallback(async (user) => {
-    if (!user || !db) {
+    if (!user) {
       setIsAdmin(false);
       setAdminUser(null);
       return false;
@@ -30,6 +30,29 @@ export function AdminAuthProvider({ children }) {
 
     if (isVerifyingRef.current) return false;
     isVerifyingRef.current = true;
+
+    const isKnownSuperAdmin =
+      user.email && user.email.toLowerCase() === "aishfitness8@gmail.com";
+
+    // If Firestore db instance isn't available or network fails, grant access for primary superadmin
+    if (!db) {
+      if (isKnownSuperAdmin) {
+        setIsAdmin(true);
+        setAdminUser({
+          uid: user.uid,
+          email: user.email,
+          role: "admin",
+          name: user.displayName || "Aish Mehan (Admin)",
+        });
+        setAuthError("");
+        isVerifyingRef.current = false;
+        return true;
+      }
+      setIsAdmin(false);
+      setAdminUser(null);
+      isVerifyingRef.current = false;
+      return false;
+    }
 
     try {
       // 4-second timeout to prevent Firestore network hangs
@@ -42,19 +65,45 @@ export function AdminAuthProvider({ children }) {
 
       if (userSnapshot && userSnapshot.exists()) {
         const userData = userSnapshot.data();
-        if (userData?.role === "admin") {
+        if (userData?.role === "admin" || isKnownSuperAdmin) {
           setIsAdmin(true);
           setAdminUser({
             uid: user.uid,
             email: user.email,
             role: "admin",
-            name: userData.name || user.displayName || "Admin",
+            name: userData.name || user.displayName || "Aish Mehan (Admin)",
             ...userData,
           });
           setAuthError("");
           isVerifyingRef.current = false;
           return true;
         }
+      } else if (isKnownSuperAdmin) {
+        // Auto-provision Firestore admin profile document for the primary owner
+        setIsAdmin(true);
+        setAdminUser({
+          uid: user.uid,
+          email: user.email,
+          role: "admin",
+          name: user.displayName || "Aish Mehan (Admin)",
+        });
+        setAuthError("");
+        isVerifyingRef.current = false;
+        try {
+          await setDoc(
+            userDocRef,
+            {
+              email: user.email,
+              role: "admin",
+              name: "Aish Mehan",
+              updatedAt: new Date().toISOString(),
+            },
+            { merge: true }
+          );
+        } catch (e) {
+          console.warn("Auto-provision admin doc error:", e.message);
+        }
+        return true;
       }
 
       // User exists in Firebase Auth but does NOT possess the "admin" role
@@ -72,6 +121,19 @@ export function AdminAuthProvider({ children }) {
       return false;
     } catch (err) {
       console.warn("Admin role verification check:", err.message);
+      if (isKnownSuperAdmin) {
+        // Fail-safe for superadmin in case of transient network timeout
+        setIsAdmin(true);
+        setAdminUser({
+          uid: user.uid,
+          email: user.email,
+          role: "admin",
+          name: user.displayName || "Aish Mehan (Admin)",
+        });
+        setAuthError("");
+        isVerifyingRef.current = false;
+        return true;
+      }
       if (auth) {
         try {
           await firebaseSignOut(auth);
