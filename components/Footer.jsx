@@ -16,7 +16,7 @@ import {
 
 export default function Footer() {
   const { openApplicationModal } = useModal();
-  const storeUrl = "https://stageandsteelsupplements.com/";
+  const storeUrl = "https://stageandsteel.in/";
 
   // Social Links matching user requirements
   const socialLinks = [

@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { ArrowUpRight, ShieldCheck, Sparkles } from "lucide-react";
 
 export default function SupplementSection() {
-  const storeUrl = "https://stageandsteelsupplements.com/";
+  const storeUrl = "https://stageandsteel.in/";
 
   return (
     <section className="relative w-full bg-white text-near-black pt-10 sm:pt-14 pb-20 sm:pb-24 clip-chamfer-bottom-notch shadow-2xl z-20">

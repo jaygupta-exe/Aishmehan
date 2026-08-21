@@ -178,7 +178,7 @@ export default function CoachSection() {
 
             {/* Chamfered White Brand Box */}
             <a
-              href="https://stageandsteelsupplements.com/"
+              href="https://stageandsteel.in/"
               target="_blank"
               rel="noopener noreferrer"
               className="block bg-white p-6 sm:p-8 md:p-10 transition-all duration-300 hover:shadow-glow-khaki group cursor-pointer"
