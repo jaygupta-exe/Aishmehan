@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { siteData } from "@/data/siteData";
+import { useSiteContent } from "@/context/DataContext";
 import { useModal } from "@/context/ModalContext";
 import {
   ShieldCheck,
@@ -15,33 +16,37 @@ import {
 
 export default function CertificationsSection() {
   const { openApplicationModal } = useModal();
-  const certData = siteData.certifications;
+  const { content } = useSiteContent();
+  const certData = content?.certifications || siteData.certifications;
+  const items = certData?.items || siteData.certifications.items || [];
+  const stats = certData?.stats || siteData.certifications.stats || [];
+
   const [activeCategory, setActiveCategory] = useState("all");
   const [selectedCert, setSelectedCert] = useState(null);
 
   const categories = [
-    { id: "all", label: "ALL CREDENTIALS", count: certData.items.length },
+    { id: "all", label: "ALL CREDENTIALS", count: items.length },
     {
       id: "championship",
       label: "CHAMPIONSHIP TITLES",
-      count: certData.items.filter((i) => i.category === "championship").length,
+      count: items.filter((i) => i.category === "championship").length,
     },
     {
       id: "medical",
       label: "CORRECTIVE & REHAB",
-      count: certData.items.filter((i) => i.category === "medical").length,
+      count: items.filter((i) => i.category === "medical").length,
     },
     {
       id: "accreditation",
       label: "GLOBAL ACCREDITATIONS",
-      count: certData.items.filter((i) => i.category === "accreditation").length,
+      count: items.filter((i) => i.category === "accreditation").length,
     },
   ];
 
   const filteredItems =
     activeCategory === "all"
-      ? certData.items
-      : certData.items.filter((item) => item.category === activeCategory);
+      ? items
+      : items.filter((item) => item.category === activeCategory);
 
   return (
     <section
@@ -64,18 +69,20 @@ export default function CertificationsSection() {
           <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 bg-deep-olive border border-muted-olive/50 clip-chamfer-btn mb-4 shadow-sm">
             <ShieldCheck className="w-4 h-4 text-khaki" />
             <span className="font-geo text-xs sm:text-sm font-bold tracking-[0.25em] text-khaki uppercase">
-              {certData.eyebrow}
+              {certData?.eyebrow || "VERIFIED CREDENTIALS & ACCOLADES"}
             </span>
           </div>
 
           {/* Large Headline */}
           <h2 className="font-geo text-3xl sm:text-5xl md:text-6xl font-black uppercase tracking-tight text-off-white leading-[0.95] mb-4 drop-shadow-md">
-            GLOBALLY ACCREDITED &amp;
-            <span className="block text-khaki mt-1">CHAMPIONSHIP PROVEN</span>
+            {certData?.headlineMain || "GLOBALLY ACCREDITED &"}
+            <span className="block text-khaki mt-1">
+              {certData?.headlineAccent || "CHAMPIONSHIP PROVEN"}
+            </span>
           </h2>
 
           <p className="font-sans text-sm sm:text-base text-off-white/80 leading-relaxed max-w-2xl mx-auto">
-            {certData.subheadline}
+            {certData?.subheadline || siteData.certifications.subheadline}
           </p>
         </div>
 
@@ -83,7 +90,7 @@ export default function CertificationsSection() {
             2. KEY AUTHORITY PILLARS STRIP
            ==================================================== */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 mb-12 sm:mb-16">
-          {certData.stats.map((stat, idx) => (
+          {(stats || []).map((stat, idx) => (
             <motion.div
               key={idx}
               initial={{ opacity: 0, y: 15 }}

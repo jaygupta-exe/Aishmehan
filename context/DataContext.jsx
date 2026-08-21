@@ -479,6 +479,53 @@ export function DataProvider({ children }) {
     }
   };
 
+  // Certifications Management (Admin only)
+  const addCertification = async (item) => {
+    const currentCertifications = content?.certifications || defaultSiteData.certifications;
+    const currentItems = currentCertifications?.items || [];
+    const newItem = {
+      ...item,
+      id: item.id || `cert_${Date.now()}`,
+    };
+    const updatedItems = [newItem, ...currentItems];
+    const updatedCertifications = {
+      ...currentCertifications,
+      items: updatedItems,
+    };
+    return await saveSiteContent({ certifications: updatedCertifications });
+  };
+
+  const updateCertification = async (id, updatedFields) => {
+    const currentCertifications = content?.certifications || defaultSiteData.certifications;
+    const currentItems = currentCertifications?.items || [];
+    const updatedItems = currentItems.map((c) => (c.id === id ? { ...c, ...updatedFields } : c));
+    const updatedCertifications = {
+      ...currentCertifications,
+      items: updatedItems,
+    };
+    return await saveSiteContent({ certifications: updatedCertifications });
+  };
+
+  const deleteCertification = async (id) => {
+    const currentCertifications = content?.certifications || defaultSiteData.certifications;
+    const currentItems = currentCertifications?.items || [];
+    const updatedItems = currentItems.filter((c) => c.id !== id);
+    const updatedCertifications = {
+      ...currentCertifications,
+      items: updatedItems,
+    };
+    return await saveSiteContent({ certifications: updatedCertifications });
+  };
+
+  const saveCertificationsConfig = async (config) => {
+    const currentCertifications = content?.certifications || defaultSiteData.certifications;
+    const updatedCertifications = {
+      ...currentCertifications,
+      ...config,
+    };
+    return await saveSiteContent({ certifications: updatedCertifications });
+  };
+
   // Seed initial siteData into Firestore
   const seedInitialData = async () => {
     try {
@@ -529,6 +576,10 @@ export function DataProvider({ children }) {
         addTransformation,
         updateTransformation,
         deleteTransformation,
+        addCertification,
+        updateCertification,
+        deleteCertification,
+        saveCertificationsConfig,
         seedInitialData,
         coachWhatsAppNumber: content?.COACH_WHATSAPP_NUMBER || defaultSiteData.COACH_WHATSAPP_NUMBER || COACH_WHATSAPP_NUMBER,
       }}

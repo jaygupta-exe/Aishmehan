@@ -31,6 +31,8 @@ import {
   Clock,
   ChevronRight,
   Database,
+  Award,
+  ShieldCheck,
 } from "lucide-react";
 
 export default function AdminDashboardPage() {
@@ -44,6 +46,10 @@ export default function AdminDashboardPage() {
     addTransformation,
     updateTransformation,
     deleteTransformation,
+    addCertification,
+    updateCertification,
+    deleteCertification,
+    saveCertificationsConfig,
     seedInitialData,
     isFirebaseConnected,
   } = useSiteContent();
@@ -111,6 +117,44 @@ export default function AdminDashboardPage() {
     applicationFormUrl: content?.APPLICATION_FORM_URL || "#apply",
   });
 
+  // Certifications Form & State
+  const certItems = useMemo(() => {
+    return content?.certifications?.items || [];
+  }, [content]);
+
+  const [certConfigForm, setCertConfigForm] = useState({
+    eyebrow: content?.certifications?.eyebrow || "VERIFIED CREDENTIALS & ACCOLADES",
+    headlineMain: content?.certifications?.headlineMain || "GLOBALLY ACCREDITED &",
+    headlineAccent: content?.certifications?.headlineAccent || "CHAMPIONSHIP PROVEN",
+    subheadline:
+      content?.certifications?.subheadline ||
+      "Every protocol is backed by internationally accredited governing bodies, sports science qualifications, and natural bodybuilding championship titles.",
+    stats: content?.certifications?.stats || [
+      { label: "CHAMPIONSHIP TITLES", value: "3X CHAMPION", desc: "NPC Miami & Musclemania" },
+      { label: "GLOBAL ACCREDITATION", value: "EQF LEVEL 4", desc: "EREPS & EuropeActive" },
+      { label: "SPECIALIZATION", value: "ACE & ACSM", desc: "Posture & Corrective Exercise" },
+      { label: "PRACTICE STANDARDS", value: "ISO COMPLIANT", desc: "9001 / 14001 / 45001" },
+    ],
+  });
+
+  const [isCertModalOpen, setIsCertModalOpen] = useState(false);
+  const [editingCert, setEditingCert] = useState(null);
+  const [certFormData, setCertFormData] = useState({
+    title: "",
+    category: "championship",
+    categoryLabel: "CHAMPIONSHIP TITLE",
+    badgeText: "3X USA CHAMPION",
+    badgeColor: "gold",
+    organization: "",
+    credential: "",
+    date: "",
+    issuingAuthority: "",
+    regNo: "",
+    image: "/images/Aisa certificate 2022.png",
+    highlightsText: "",
+    verificationNote: "",
+  });
+
   // Sync form states with live Firestore content when loaded/updated
   useEffect(() => {
     if (content) {
@@ -137,6 +181,16 @@ export default function AdminDashboardPage() {
       }
       if (content.pricing?.packages && content.pricing.packages.length > 0) {
         setPricingPackages(content.pricing.packages);
+      }
+      if (content.certifications) {
+        setCertConfigForm((prev) => ({
+          ...prev,
+          eyebrow: content.certifications.eyebrow || prev.eyebrow,
+          headlineMain: content.certifications.headlineMain || prev.headlineMain,
+          headlineAccent: content.certifications.headlineAccent || prev.headlineAccent,
+          subheadline: content.certifications.subheadline || prev.subheadline,
+          stats: content.certifications.stats || prev.stats,
+        }));
       }
       setSettingsForm((prev) => ({
         ...prev,
@@ -170,6 +224,108 @@ export default function AdminDashboardPage() {
   const showToast = (msg) => {
     setToastMessage(msg);
     setTimeout(() => setToastMessage(""), 4000);
+  };
+
+  // Certifications CRUD handlers
+  const openNewCertModal = () => {
+    setEditingCert(null);
+    setCertFormData({
+      title: "",
+      category: "championship",
+      categoryLabel: "CHAMPIONSHIP TITLE",
+      badgeText: "CHAMPIONSHIP TITLE",
+      badgeColor: "gold",
+      organization: "",
+      credential: "",
+      date: "",
+      issuingAuthority: "",
+      regNo: "",
+      image: "/images/Aisa certificate 2022.png",
+      highlightsText: "",
+      verificationNote: "",
+    });
+    setIsCertModalOpen(true);
+  };
+
+  const openEditCertModal = (item) => {
+    setEditingCert(item);
+    setCertFormData({
+      title: item.title || "",
+      category: item.category || "championship",
+      categoryLabel: item.categoryLabel || "CHAMPIONSHIP TITLE",
+      badgeText: item.badgeText || "CHAMPIONSHIP TITLE",
+      badgeColor: item.badgeColor || "gold",
+      organization: item.organization || "",
+      credential: item.credential || "",
+      date: item.date || "",
+      issuingAuthority: item.issuingAuthority || "",
+      regNo: item.regNo || "",
+      image: item.image || "",
+      highlightsText: (item.highlights || []).join("\n"),
+      verificationNote: item.verificationNote || "",
+    });
+    setIsCertModalOpen(true);
+  };
+
+  const handleSaveCert = async (e) => {
+    e.preventDefault();
+    if (!certFormData.title) {
+      alert("Please provide a title for the certification.");
+      return;
+    }
+
+    const payload = {
+      title: certFormData.title.trim(),
+      category: certFormData.category,
+      categoryLabel: certFormData.categoryLabel || "CREDENTIAL",
+      badgeText: certFormData.badgeText || "VERIFIED",
+      badgeColor: certFormData.badgeColor || "gold",
+      organization: certFormData.organization.trim(),
+      credential: certFormData.credential.trim(),
+      date: certFormData.date.trim(),
+      issuingAuthority: certFormData.issuingAuthority.trim(),
+      regNo: certFormData.regNo.trim(),
+      image: certFormData.image.trim() || "/images/Aisa certificate 2022.png",
+      highlights: certFormData.highlightsText
+        .split("\n")
+        .map((s) => s.trim())
+        .filter(Boolean),
+      verificationNote: certFormData.verificationNote.trim(),
+    };
+
+    setIsSaving(true);
+    if (editingCert) {
+      await updateCertification(editingCert.id, payload);
+      showToast("Certification record updated!");
+    } else {
+      await addCertification(payload);
+      showToast("New certification added to website!");
+    }
+    setIsSaving(false);
+    setIsCertModalOpen(false);
+  };
+
+  const handleDeleteCert = async (id) => {
+    if (window.confirm("Are you sure you want to delete this certificate record?")) {
+      setIsSaving(true);
+      await deleteCertification(id);
+      setIsSaving(false);
+      showToast("Certificate removed.");
+    }
+  };
+
+  const handleSaveCertConfig = async (e) => {
+    e.preventDefault();
+    setIsSaving(true);
+    const res = await saveCertificationsConfig(certConfigForm);
+    setIsSaving(false);
+    showToast(res.message || "Credentials header & stats updated!");
+  };
+
+  const handleUpdateCertStat = (index, field, value) => {
+    const updatedStats = [...certConfigForm.stats];
+    updatedStats[index] = { ...updatedStats[index], [field]: value };
+    setCertConfigForm({ ...certConfigForm, stats: updatedStats });
   };
 
   // Save Hero & Workshop Form
@@ -382,6 +538,7 @@ export default function AdminDashboardPage() {
           { id: "hero_workshop", label: "Hero & Workshop", icon: Flame },
           { id: "pricing", label: "Pricing & Plans", icon: CreditCard },
           { id: "transformations", label: "Transformations", icon: ImageIcon, badge: transformations.length },
+          { id: "certifications", label: "Certifications", icon: Award, badge: certItems.length },
           { id: "leads", label: "Leads Inbox", icon: Users, badge: applications.length },
           { id: "settings", label: "Settings & Sync", icon: Settings },
         ].map((tab) => {
@@ -419,7 +576,7 @@ export default function AdminDashboardPage() {
       {activeTab === "overview" && (
         <div className="space-y-6">
           {/* Quick Metrics Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
             <div className="bg-deep-olive/60 border border-muted-olive/60 p-5 clip-chamfer-btn">
               <div className="flex items-center justify-between text-off-white/60 mb-2">
                 <span className="text-xs font-mono uppercase tracking-wider">TOTAL LEADS</span>
@@ -447,6 +604,15 @@ export default function AdminDashboardPage() {
               </div>
               <div className="text-3xl font-geo font-black text-off-white">{transformations.length}</div>
               <div className="text-[11px] font-mono text-khaki mt-1">Live Before & After Gallery</div>
+            </div>
+
+            <div className="bg-deep-olive/60 border border-muted-olive/60 p-5 clip-chamfer-btn">
+              <div className="flex items-center justify-between text-off-white/60 mb-2">
+                <span className="text-xs font-mono uppercase tracking-wider">ACCOLADES & CERTS</span>
+                <Award className="w-4 h-4 text-khaki" />
+              </div>
+              <div className="text-3xl font-geo font-black text-off-white">{certItems.length}</div>
+              <div className="text-[11px] font-mono text-khaki mt-1">Championships & Credentials</div>
             </div>
 
             <div className="bg-deep-olive/60 border border-muted-olive/60 p-5 clip-chamfer-btn">
@@ -947,7 +1113,228 @@ export default function AdminDashboardPage() {
       )}
 
       {/* =========================================================
-          TAB 5: LEADS & APPLICATIONS INBOX
+          TAB 5: CERTIFICATIONS & CHAMPIONSHIPS MANAGER (CRUD)
+         ========================================================= */}
+      {activeTab === "certifications" && (
+        <div className="space-y-6">
+          {/* Action Bar */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <h3 className="font-geo font-black text-xl uppercase text-off-white tracking-wider flex items-center space-x-2">
+                <Award className="w-5 h-5 text-khaki" />
+                <span>GLOBAL CERTIFICATIONS &amp; ACCOLADES ({certItems.length})</span>
+              </h3>
+              <p className="text-xs font-mono text-off-white/60 mt-1">
+                Manage championship titles, international accreditations, registration numbers, and high-res certificate zoom previews.
+              </p>
+            </div>
+
+            <button
+              onClick={openNewCertModal}
+              className="px-5 py-2.5 bg-khaki text-near-black font-geo font-black text-xs uppercase tracking-widest clip-chamfer-btn hover:bg-off-white transition-all flex items-center space-x-2 cursor-pointer shadow-glow-khaki self-start sm:self-auto"
+            >
+              <Plus className="w-4 h-4" />
+              <span>ADD NEW CERTIFICATE</span>
+            </button>
+          </div>
+
+          {/* Section 1: Section Header & 4 Authority Pillars Editor */}
+          <div className="bg-deep-olive/60 border border-muted-olive/60 p-5 clip-chamfer-btn space-y-4">
+            <div className="flex items-center justify-between border-b border-muted-olive/40 pb-2">
+              <div className="flex items-center space-x-2">
+                <ShieldCheck className="w-4 h-4 text-khaki" />
+                <h4 className="font-geo font-bold text-sm text-khaki uppercase tracking-wider">
+                  SECTION HEADINGS &amp; KEY AUTHORITY STATS
+                </h4>
+              </div>
+              <button
+                onClick={handleSaveCertConfig}
+                disabled={isSaving}
+                className="px-4 py-1.5 bg-khaki text-near-black font-geo font-black text-[11px] uppercase tracking-wider clip-chamfer-btn hover:bg-off-white transition-all flex items-center space-x-1.5 cursor-pointer disabled:opacity-50"
+              >
+                <Save className="w-3.5 h-3.5" />
+                <span>{isSaving ? "SAVING..." : "SAVE HEADINGS & STATS"}</span>
+              </button>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div>
+                <label className="block text-[11px] font-mono uppercase tracking-wider text-off-white/70 mb-1">
+                  Eyebrow Tag
+                </label>
+                <input
+                  type="text"
+                  value={certConfigForm.eyebrow}
+                  onChange={(e) => setCertConfigForm({ ...certConfigForm, eyebrow: e.target.value })}
+                  className="w-full px-3 py-2 bg-near-black border border-muted-olive/50 text-off-white font-mono text-xs focus:outline-none focus:border-khaki"
+                />
+              </div>
+
+              <div>
+                <label className="block text-[11px] font-mono uppercase tracking-wider text-off-white/70 mb-1">
+                  Main Headline
+                </label>
+                <input
+                  type="text"
+                  value={certConfigForm.headlineMain}
+                  onChange={(e) => setCertConfigForm({ ...certConfigForm, headlineMain: e.target.value })}
+                  className="w-full px-3 py-2 bg-near-black border border-muted-olive/50 text-off-white font-mono text-xs focus:outline-none focus:border-khaki"
+                />
+              </div>
+
+              <div>
+                <label className="block text-[11px] font-mono uppercase tracking-wider text-off-white/70 mb-1">
+                  Accent Headline (Gold)
+                </label>
+                <input
+                  type="text"
+                  value={certConfigForm.headlineAccent}
+                  onChange={(e) => setCertConfigForm({ ...certConfigForm, headlineAccent: e.target.value })}
+                  className="w-full px-3 py-2 bg-near-black border border-muted-olive/50 text-off-white font-mono text-xs focus:outline-none focus:border-khaki"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-[11px] font-mono uppercase tracking-wider text-off-white/70 mb-1">
+                Subheadline Description
+              </label>
+              <textarea
+                rows={2}
+                value={certConfigForm.subheadline}
+                onChange={(e) => setCertConfigForm({ ...certConfigForm, subheadline: e.target.value })}
+                className="w-full px-3 py-2 bg-near-black border border-muted-olive/50 text-off-white font-mono text-xs focus:outline-none focus:border-khaki"
+              />
+            </div>
+
+            {/* 4 Pillars Grid */}
+            <div className="pt-2">
+              <label className="block text-[11px] font-mono uppercase tracking-wider text-khaki font-bold mb-2">
+                4 Authority Stat Pillars (Displayed on Public Homepage)
+              </label>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                {certConfigForm.stats.map((st, idx) => (
+                  <div key={idx} className="bg-near-black/70 p-3 border border-muted-olive/40 space-y-2">
+                    <span className="text-[10px] font-mono text-khaki font-bold">PILLAR #{idx + 1}</span>
+                    <input
+                      type="text"
+                      placeholder="Label (e.g. SPECIALIZATION)"
+                      value={st.label}
+                      onChange={(e) => handleUpdateCertStat(idx, "label", e.target.value)}
+                      className="w-full px-2 py-1 bg-deep-olive border border-muted-olive/50 text-off-white font-mono text-[11px] focus:outline-none focus:border-khaki"
+                    />
+                    <input
+                      type="text"
+                      placeholder="Value (e.g. ACE & ACSM)"
+                      value={st.value}
+                      onChange={(e) => handleUpdateCertStat(idx, "value", e.target.value)}
+                      className="w-full px-2 py-1 bg-deep-olive border border-muted-olive/50 text-khaki font-mono font-bold text-xs focus:outline-none focus:border-khaki"
+                    />
+                    <input
+                      type="text"
+                      placeholder="Desc (e.g. Posture & Corrective)"
+                      value={st.desc}
+                      onChange={(e) => handleUpdateCertStat(idx, "desc", e.target.value)}
+                      className="w-full px-2 py-1 bg-deep-olive border border-muted-olive/50 text-off-white/70 font-mono text-[10px] focus:outline-none focus:border-khaki"
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Section 2: Certifications Cards Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {certItems.map((item, idx) => {
+              const isGold = item.badgeColor === "gold";
+              const isBlue = item.badgeColor === "blue";
+              const isEmerald = item.badgeColor === "emerald";
+
+              return (
+                <div
+                  key={item.id || idx}
+                  className="bg-deep-olive/50 border border-muted-olive/60 overflow-hidden flex flex-col justify-between"
+                >
+                  <div>
+                    {/* Image / Certificate Preview */}
+                    <div className="relative aspect-[4/3] bg-near-black w-full overflow-hidden border-b border-muted-olive/50 p-2 flex items-center justify-center group/prev">
+                      <img
+                        src={item.image}
+                        alt={item.title}
+                        className="max-h-full max-w-full object-contain"
+                        onError={(e) => {
+                          e.currentTarget.src = "/images/Aisa certificate 2022.png";
+                        }}
+                      />
+                      <div className="absolute top-2 left-2 px-2 py-0.5 bg-near-black/90 border border-khaki text-[10px] font-mono text-khaki uppercase font-bold">
+                        {item.badgeText || "CERTIFICATE"}
+                      </div>
+                      <div className="absolute top-2 right-2 px-2 py-0.5 bg-deep-olive/90 text-[10px] font-mono text-off-white uppercase">
+                        {item.categoryLabel || item.category || "ACCREDITATION"}
+                      </div>
+                    </div>
+
+                    {/* Details */}
+                    <div className="p-4 space-y-2">
+                      <h4 className="font-geo font-bold text-sm text-off-white uppercase leading-snug">
+                        {item.title}
+                      </h4>
+                      <p className="text-xs font-mono text-khaki font-semibold">
+                        {item.organization || item.issuingAuthority}
+                      </p>
+                      <div className="text-[11px] font-mono text-off-white/60 flex items-center justify-between">
+                        <span>ID: {item.regNo || "N/A"}</span>
+                        <span>{item.date}</span>
+                      </div>
+
+                      {/* Highlights */}
+                      {item.highlights && item.highlights.length > 0 && (
+                        <ul className="text-[11px] font-sans text-off-white/80 space-y-1 border-t border-muted-olive/30 pt-2">
+                          {item.highlights.slice(0, 2).map((h, i) => (
+                            <li key={i} className="flex items-start space-x-1.5 line-clamp-1">
+                              <span className="text-khaki">•</span>
+                              <span>{h}</span>
+                            </li>
+                          ))}
+                          {item.highlights.length > 2 && (
+                            <li className="text-[10px] font-mono text-khaki">
+                              +{item.highlights.length - 2} more verification points
+                            </li>
+                          )}
+                        </ul>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Card Bottom Actions */}
+                  <div className="p-3 bg-near-black/60 border-t border-muted-olive/40 flex items-center justify-between">
+                    <span className="text-[10px] font-mono text-off-white/50">RECORD #{idx + 1}</span>
+                    <div className="flex items-center space-x-2">
+                      <button
+                        onClick={() => openEditCertModal(item)}
+                        className="p-1.5 bg-deep-olive hover:bg-khaki hover:text-near-black text-off-white transition-colors cursor-pointer"
+                        title="Edit Certificate"
+                      >
+                        <Edit className="w-3.5 h-3.5" />
+                      </button>
+                      <button
+                        onClick={() => handleDeleteCert(item.id)}
+                        className="p-1.5 bg-red-950/60 hover:bg-red-800 text-red-300 transition-colors cursor-pointer"
+                        title="Delete Certificate"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* =========================================================
+          TAB 6: LEADS & APPLICATIONS INBOX
          ========================================================= */}
       {activeTab === "leads" && (
         <div className="space-y-6">
@@ -1405,6 +1792,250 @@ export default function AdminDashboardPage() {
                 </button>
               </div>
             </div>
+          </div>
+        </div>
+      )}
+      {/* =========================================================
+          MODAL: ADD / EDIT CERTIFICATION
+         ========================================================= */}
+      {isCertModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm overflow-y-auto">
+          <div className="bg-near-black border-2 border-khaki w-full max-w-2xl p-6 space-y-4 relative clip-chamfer-btn my-8 max-h-[92vh] overflow-y-auto">
+            <div className="flex items-center justify-between border-b border-muted-olive/50 pb-3">
+              <div className="flex items-center space-x-2">
+                <Award className="w-5 h-5 text-khaki" />
+                <h4 className="font-geo font-black text-base uppercase text-off-white tracking-wider">
+                  {editingCert ? "EDIT CERTIFICATION // CREDENTIAL" : "ADD NEW CERTIFICATION // CREDENTIAL"}
+                </h4>
+              </div>
+              <button
+                onClick={() => setIsCertModalOpen(false)}
+                className="text-off-white/60 hover:text-khaki cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <form onSubmit={handleSaveCert} className="space-y-4 text-xs font-mono">
+              {/* Row 1: Title */}
+              <div>
+                <label className="block uppercase text-off-white/80 mb-1">
+                  Credential / Championship Title <span className="text-red-400">*</span>
+                </label>
+                <input
+                  type="text"
+                  placeholder="e.g. 3-Time Champion — NPC Miami, USA"
+                  value={certFormData.title}
+                  onChange={(e) => setCertFormData({ ...certFormData, title: e.target.value })}
+                  className="w-full px-3 py-2 bg-deep-olive border border-muted-olive text-off-white focus:outline-none focus:border-khaki font-semibold text-sm"
+                  required
+                />
+              </div>
+
+              {/* Row 2: Category & Badge Details */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div>
+                  <label className="block uppercase text-off-white/80 mb-1">Category Filter</label>
+                  <select
+                    value={certFormData.category}
+                    onChange={(e) => {
+                      const cat = e.target.value;
+                      let label = "CHAMPIONSHIP TITLE";
+                      let badge = "CHAMPION";
+                      let color = "gold";
+                      if (cat === "medical") {
+                        label = "CORRECTIVE & REHAB";
+                        badge = "ACE & ACSM APPROVED";
+                        color = "blue";
+                      } else if (cat === "accreditation") {
+                        label = "GLOBAL ACCREDITATION";
+                        badge = "CERTIFIED";
+                        color = "emerald";
+                      }
+                      setCertFormData({
+                        ...certFormData,
+                        category: cat,
+                        categoryLabel: label,
+                        badgeText: badge,
+                        badgeColor: color,
+                      });
+                    }}
+                    className="w-full px-3 py-2 bg-deep-olive border border-muted-olive text-off-white focus:outline-none focus:border-khaki"
+                  >
+                    <option value="championship">Championship Titles</option>
+                    <option value="medical">Corrective &amp; Rehab</option>
+                    <option value="accreditation">Global Accreditations</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block uppercase text-off-white/80 mb-1">Badge Tag Text</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. 3X USA CHAMPION"
+                    value={certFormData.badgeText}
+                    onChange={(e) => setCertFormData({ ...certFormData, badgeText: e.target.value })}
+                    className="w-full px-3 py-2 bg-deep-olive border border-muted-olive text-off-white focus:outline-none focus:border-khaki uppercase"
+                  />
+                </div>
+
+                <div>
+                  <label className="block uppercase text-off-white/80 mb-1">Badge Theme Color</label>
+                  <select
+                    value={certFormData.badgeColor}
+                    onChange={(e) => setCertFormData({ ...certFormData, badgeColor: e.target.value })}
+                    className="w-full px-3 py-2 bg-deep-olive border border-muted-olive text-off-white focus:outline-none focus:border-khaki"
+                  >
+                    <option value="gold">Gold / Khaki (Championships)</option>
+                    <option value="blue">Electric Blue (Corrective/Rehab)</option>
+                    <option value="emerald">Emerald Green (Accreditations)</option>
+                    <option value="khaki">Khaki Tactical</option>
+                  </select>
+                </div>
+              </div>
+
+              {/* Row 3: Organization & Credential */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="block uppercase text-off-white/80 mb-1">Issuing Body / Organization</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. National Physique Committee (NPC) USA"
+                    value={certFormData.organization}
+                    onChange={(e) => setCertFormData({ ...certFormData, organization: e.target.value })}
+                    className="w-full px-3 py-2 bg-deep-olive border border-muted-olive text-off-white focus:outline-none focus:border-khaki"
+                  />
+                </div>
+
+                <div>
+                  <label className="block uppercase text-off-white/80 mb-1">Credential Record Subtitle</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. 3-Time Championship Titleholder — NPC Miami, Florida"
+                    value={certFormData.credential}
+                    onChange={(e) => setCertFormData({ ...certFormData, credential: e.target.value })}
+                    className="w-full px-3 py-2 bg-deep-olive border border-muted-olive text-off-white focus:outline-none focus:border-khaki"
+                  />
+                </div>
+              </div>
+
+              {/* Row 4: Registration ID, Date & Issuing Authority */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div>
+                  <label className="block uppercase text-off-white/80 mb-1">Reg / License / Certificate ID</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. NPC-USA-MIA-3X or CES062989"
+                    value={certFormData.regNo}
+                    onChange={(e) => setCertFormData({ ...certFormData, regNo: e.target.value })}
+                    className="w-full px-3 py-2 bg-deep-olive border border-muted-olive text-off-white focus:outline-none focus:border-khaki uppercase"
+                  />
+                </div>
+
+                <div>
+                  <label className="block uppercase text-off-white/80 mb-1">Date / Validity Term</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. Awarded 25th July 2026"
+                    value={certFormData.date}
+                    onChange={(e) => setCertFormData({ ...certFormData, date: e.target.value })}
+                    className="w-full px-3 py-2 bg-deep-olive border border-muted-olive text-off-white focus:outline-none focus:border-khaki"
+                  />
+                </div>
+
+                <div>
+                  <label className="block uppercase text-off-white/80 mb-1">Authority Signatory</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. Louis Zwick (President)"
+                    value={certFormData.issuingAuthority}
+                    onChange={(e) => setCertFormData({ ...certFormData, issuingAuthority: e.target.value })}
+                    className="w-full px-3 py-2 bg-deep-olive border border-muted-olive text-off-white focus:outline-none focus:border-khaki"
+                  />
+                </div>
+              </div>
+
+              {/* Row 5: Certificate Image URL & Quick Presets */}
+              <div>
+                <label className="block uppercase text-off-white/80 mb-1">
+                  Certificate High-Res Image URL / Path <span className="text-red-400">*</span>
+                </label>
+                <input
+                  type="text"
+                  placeholder="/images/Aisa certificate 2022.png or custom image URL"
+                  value={certFormData.image}
+                  onChange={(e) => setCertFormData({ ...certFormData, image: e.target.value })}
+                  className="w-full px-3 py-2 bg-deep-olive border border-muted-olive text-off-white focus:outline-none focus:border-khaki mb-1.5"
+                  required
+                />
+                <div className="flex flex-wrap items-center gap-1.5 pt-1">
+                  <span className="text-[10px] uppercase text-off-white/50">Quick Presets:</span>
+                  {[
+                    { label: "NPC Miami Trophy", path: "/images/npc-miami-champion.jpg" },
+                    { label: "Musclemania Asia", path: "/images/Aisa certificate 2022.png" },
+                    { label: "Prehab 121 CES", path: "/images/certificate of completion.png" },
+                    { label: "EREPS Level 4", path: "/images/EREPS certificate.png" },
+                    { label: "Musclemania India", path: "/images/muscle mania india.png" },
+                    { label: "Classic Fitness CFA", path: "/images/class fitness academy.png" },
+                  ].map((preset) => (
+                    <button
+                      type="button"
+                      key={preset.path}
+                      onClick={() => setCertFormData({ ...certFormData, image: preset.path })}
+                      className="px-2 py-0.5 bg-deep-olive hover:bg-khaki hover:text-near-black border border-muted-olive text-[10px] text-off-white/70 transition-colors cursor-pointer"
+                    >
+                      {preset.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Row 6: Bullet Highlights */}
+              <div>
+                <label className="block uppercase text-off-white/80 mb-1">
+                  Key Verification Highlights (One bullet point per line)
+                </label>
+                <textarea
+                  rows={3}
+                  placeholder={`1st Place Gold Medal Champion across all competitors\n100% Lifetime Natural & Drug-Free Standard\nOfficial Verifiable Credential`}
+                  value={certFormData.highlightsText}
+                  onChange={(e) => setCertFormData({ ...certFormData, highlightsText: e.target.value })}
+                  className="w-full px-3 py-2 bg-deep-olive border border-muted-olive text-off-white focus:outline-none focus:border-khaki"
+                />
+              </div>
+
+              {/* Row 7: Verification Note */}
+              <div>
+                <label className="block uppercase text-off-white/80 mb-1">
+                  Verification Note / Official Statement
+                </label>
+                <input
+                  type="text"
+                  placeholder="e.g. Official Certificate of Recognition by Musclemania International"
+                  value={certFormData.verificationNote}
+                  onChange={(e) => setCertFormData({ ...certFormData, verificationNote: e.target.value })}
+                  className="w-full px-3 py-2 bg-deep-olive border border-muted-olive text-off-white focus:outline-none focus:border-khaki"
+                />
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex justify-end space-x-3 pt-3 border-t border-muted-olive/50">
+                <button
+                  type="button"
+                  onClick={() => setIsCertModalOpen(false)}
+                  className="px-4 py-2.5 bg-deep-olive hover:bg-near-black text-off-white uppercase cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={isSaving}
+                  className="px-6 py-2.5 bg-khaki text-near-black font-geo font-bold uppercase tracking-wider hover:bg-off-white transition-all cursor-pointer shadow-glow-khaki disabled:opacity-50"
+                >
+                  {isSaving ? "Saving..." : editingCert ? "Update Certificate" : "Add Certificate"}
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}

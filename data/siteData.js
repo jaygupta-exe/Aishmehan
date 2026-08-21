@@ -271,6 +271,8 @@ export const siteData = {
 
   certifications: {
     eyebrow: "VERIFIED CREDENTIALS & ACCOLADES",
+    headlineMain: "GLOBALLY ACCREDITED &",
+    headlineAccent: "CHAMPIONSHIP PROVEN",
     headline: "GLOBALLY ACCREDITED & CHAMPIONSHIP PROVEN",
     subheadline:
       "Every protocol is backed by internationally accredited governing bodies, sports science qualifications, and natural bodybuilding championship titles.",
