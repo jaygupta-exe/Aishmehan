@@ -241,7 +241,7 @@ export default function AdminDashboardPage() {
       date: "",
       issuingAuthority: "",
       regNo: "",
-      image: "/images/Aisa certificate 2022.png",
+      image: "",
       highlightsText: "",
       verificationNote: "",
     });
