@@ -2,6 +2,7 @@
 
 import { useState, useMemo, useEffect } from "react";
 import { useSiteContent } from "@/context/DataContext";
+import ImageDropzone from "@/components/ImageDropzone";
 import {
   LayoutDashboard,
   Flame,
@@ -1627,17 +1628,19 @@ export default function AdminDashboardPage() {
             </div>
 
             <form onSubmit={handleSaveTransformation} className="space-y-3 text-xs font-mono">
-              <div>
-                <label className="block uppercase text-off-white/70 mb-1">Image URL / Local Path</label>
-                <input
-                  type="text"
-                  placeholder="/images/before after 1.JPG or https://..."
-                  value={transFormData.src}
-                  onChange={(e) => setTransFormData({ ...transFormData, src: e.target.value })}
-                  className="w-full px-3 py-2 bg-deep-olive border border-muted-olive text-off-white focus:outline-none focus:border-khaki"
-                  required
-                />
-              </div>
+              <ImageDropzone
+                label="Transformation Image"
+                value={transFormData.src}
+                onChange={(newSrc) => setTransFormData({ ...transFormData, src: newSrc })}
+                storageFolder="transformations"
+                presets={[
+                  { label: "Before/After 1", path: "/images/before after 1.JPG" },
+                  { label: "Before/After 2", path: "/images/before after 2.JPG" },
+                  { label: "Before/After 3", path: "/images/before after 3.JPG" },
+                  { label: "Before/After 4", path: "/images/before after 4.JPG" },
+                  { label: "Before/After 5", path: "/images/before after 5.JPG" },
+                ]}
+              />
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
@@ -1955,40 +1958,21 @@ export default function AdminDashboardPage() {
                 </div>
               </div>
 
-              {/* Row 5: Certificate Image URL & Quick Presets */}
-              <div>
-                <label className="block uppercase text-off-white/80 mb-1">
-                  Certificate High-Res Image URL / Path <span className="text-red-400">*</span>
-                </label>
-                <input
-                  type="text"
-                  placeholder="/images/Aisa certificate 2022.png or custom image URL"
-                  value={certFormData.image}
-                  onChange={(e) => setCertFormData({ ...certFormData, image: e.target.value })}
-                  className="w-full px-3 py-2 bg-deep-olive border border-muted-olive text-off-white focus:outline-none focus:border-khaki mb-1.5"
-                  required
-                />
-                <div className="flex flex-wrap items-center gap-1.5 pt-1">
-                  <span className="text-[10px] uppercase text-off-white/50">Quick Presets:</span>
-                  {[
-                    { label: "NPC Miami Trophy", path: "/images/npc-miami-champion.jpg" },
-                    { label: "Musclemania Asia", path: "/images/Aisa certificate 2022.png" },
-                    { label: "Prehab 121 CES", path: "/images/certificate of completion.png" },
-                    { label: "EREPS Level 4", path: "/images/EREPS certificate.png" },
-                    { label: "Musclemania India", path: "/images/muscle mania india.png" },
-                    { label: "Classic Fitness CFA", path: "/images/class fitness academy.png" },
-                  ].map((preset) => (
-                    <button
-                      type="button"
-                      key={preset.path}
-                      onClick={() => setCertFormData({ ...certFormData, image: preset.path })}
-                      className="px-2 py-0.5 bg-deep-olive hover:bg-khaki hover:text-near-black border border-muted-olive text-[10px] text-off-white/70 transition-colors cursor-pointer"
-                    >
-                      {preset.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
+              {/* Row 5: Certificate Image Drag & Drop Uploader */}
+              <ImageDropzone
+                label="Certificate High-Res Image / Document"
+                value={certFormData.image}
+                onChange={(newImage) => setCertFormData({ ...certFormData, image: newImage })}
+                storageFolder="certificates"
+                presets={[
+                  { label: "NPC Miami Trophy", path: "/images/npc-miami-champion.jpg" },
+                  { label: "Musclemania Asia", path: "/images/Aisa certificate 2022.png" },
+                  { label: "Prehab 121 CES", path: "/images/certificate of completion.png" },
+                  { label: "EREPS Level 4", path: "/images/EREPS certificate.png" },
+                  { label: "Musclemania India", path: "/images/muscle mania india.png" },
+                  { label: "Classic Fitness CFA", path: "/images/class fitness academy.png" },
+                ]}
+              />
 
               {/* Row 6: Bullet Highlights */}
               <div>
