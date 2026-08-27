@@ -300,7 +300,30 @@ export function DataProvider({ children }) {
 
   // Save Site Content updates (Hero, Workshop, Pricing, Brand Settings)
   const saveSiteContent = async (updatedFields) => {
-    const merged = { ...content, ...updatedFields };
+    const merged = {
+      ...content,
+      ...updatedFields,
+      pricing: {
+        ...(content?.pricing || {}),
+        ...(updatedFields?.pricing || {}),
+      },
+      hero: {
+        ...(content?.hero || {}),
+        ...(updatedFields?.hero || {}),
+      },
+      jalandharWorkshop: {
+        ...(content?.jalandharWorkshop || {}),
+        ...(updatedFields?.jalandharWorkshop || {}),
+      },
+      certifications: {
+        ...(content?.certifications || {}),
+        ...(updatedFields?.certifications || {}),
+      },
+      brand: {
+        ...(content?.brand || {}),
+        ...(updatedFields?.brand || {}),
+      },
+    };
     setContent(merged);
 
     // Save non-sensitive config to local cache

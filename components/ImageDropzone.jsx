@@ -75,12 +75,15 @@ export default function ImageDropzone({
       }
 
       setIsUploading(true);
-      setUploadStatus("Processing image...");
+      setUploadStatus("Optimizing & preparing image...");
 
       try {
-        let uploadedUrl = "";
+        // Step 1: Immediately compress client-side for rapid rendering / fallback
+        const optimizedLocalDataUrl = await compressImageToDataUrl(file);
 
-        // 1. Try uploading to Firebase Storage if available
+        let finalUrl = "";
+
+        // Step 2: Try uploading to Firebase Storage with a strict 3.5s timeout
         if (storage) {
           try {
             setUploadStatus("Uploading to Firebase Cloud Storage...");
@@ -89,28 +92,37 @@ export default function ImageDropzone({
               storage,
               `${storageFolder}/${Date.now()}_${safeName}`
             );
-            const snapshot = await uploadBytes(storageRef, file);
-            uploadedUrl = await getDownloadURL(snapshot.ref);
+
+            // 3.5s timeout promise so it never hangs in an infinite spinner
+            const timeoutPromise = new Promise((_, reject) =>
+              setTimeout(
+                () => reject(new Error("Storage upload timed out (using optimized direct image)")),
+                3500
+              )
+            );
+
+            const snapshot = await Promise.race([
+              uploadBytes(storageRef, file),
+              timeoutPromise,
+            ]);
+            finalUrl = await getDownloadURL(snapshot.ref);
           } catch (storageError) {
             console.warn(
-              "Firebase Storage upload failed, falling back to local base64:",
-              storageError
+              "Firebase Storage upload bypassed/failed, using optimized direct image:",
+              storageError?.message || storageError
             );
           }
         }
 
-        // 2. Fallback to optimized Base64 data URL
-        if (!uploadedUrl) {
-          setUploadStatus("Optimizing image for direct display...");
-          uploadedUrl = await compressImageToDataUrl(file);
-        }
+        // Step 3: Use Firebase URL if successful, otherwise use optimized base64
+        const resolvedUrl = finalUrl || optimizedLocalDataUrl;
 
-        onChange(uploadedUrl);
+        onChange(resolvedUrl);
         setUploadStatus("Image ready!");
-        setTimeout(() => setUploadStatus(""), 2500);
+        setTimeout(() => setUploadStatus(""), 2000);
       } catch (err) {
         console.error("Error processing file:", err);
-        alert("Failed to process image file. Please try again or paste a URL.");
+        alert("Failed to process image file. Please try entering a direct image URL.");
       } finally {
         setIsUploading(false);
       }
@@ -200,6 +212,16 @@ export default function ImageDropzone({
             <p className="font-geo font-bold text-xs uppercase tracking-wider text-khaki">
               {uploadStatus || "Uploading & Processing Certificate Image..."}
             </p>
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsUploading(false);
+              }}
+              className="mt-2 text-[10px] font-mono text-off-white/60 hover:text-khaki underline cursor-pointer"
+            >
+              Cancel / Retry
+            </button>
           </div>
         ) : value ? (
           /* Image Preview Mode */

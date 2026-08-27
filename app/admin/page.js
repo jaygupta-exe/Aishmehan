@@ -88,6 +88,9 @@ export default function AdminDashboardPage() {
         price: "6,999",
         numericPrice: 6999,
         badge: null,
+        popular: false,
+        durationLabel: "4 WEEKS PROTOCOL",
+        currency: "INR",
         description: "Ideal for kickstarting fat loss and baseline momentum.",
       },
       {
@@ -97,6 +100,9 @@ export default function AdminDashboardPage() {
         price: "12,999",
         numericPrice: 12999,
         badge: "MOST POPULAR",
+        popular: true,
+        durationLabel: "8 WEEKS PROTOCOL",
+        currency: "INR",
         description: "The gold standard protocol for visible body recomposition.",
       },
       {
@@ -106,6 +112,9 @@ export default function AdminDashboardPage() {
         price: "18,999",
         numericPrice: 18999,
         badge: "BEST VALUE",
+        popular: false,
+        durationLabel: "12 WEEKS PROTOCOL",
+        currency: "INR",
         description: "Full physical transformation & biomechanical mastery.",
       },
     ]
@@ -351,15 +360,27 @@ export default function AdminDashboardPage() {
   // Save Pricing Packages
   const handleSavePricing = async () => {
     setIsSaving(true);
+    const sanitizedPackages = pricingPackages.map((pkg) => ({
+      ...pkg,
+      currency: pkg.currency || "INR",
+      durationLabel: pkg.durationLabel || `${pkg.name} PROTOCOL`,
+      popular: Boolean(pkg.popular || (pkg.badge && pkg.badge.toLowerCase().includes("popular"))),
+      numericPrice: pkg.numericPrice || parseInt(String(pkg.price).replace(/,/g, ""), 10) || 0,
+    }));
+
     const updated = {
       pricing: {
         ...(content?.pricing || {}),
-        packages: pricingPackages,
+        packages: sanitizedPackages,
       },
     };
     const res = await saveSiteContent(updated);
     setIsSaving(false);
-    showToast("Pricing packages updated on live website!");
+    if (res?.success) {
+      showToast(res.message || "Pricing packages updated on live website!");
+    } else {
+      showToast(res?.message || "Failed to update pricing packages.", "error");
+    }
   };
 
   const handleUpdatePackageField = (index, field, value) => {
@@ -995,6 +1016,18 @@ export default function AdminDashboardPage() {
 
                 <div>
                   <label className="block text-[11px] font-mono uppercase tracking-wider text-off-white/70 mb-1">
+                    Duration Tag Label (e.g. 4 WEEKS PROTOCOL)
+                  </label>
+                  <input
+                    type="text"
+                    value={pkg.durationLabel || `${pkg.name} PROTOCOL`}
+                    onChange={(e) => handleUpdatePackageField(idx, "durationLabel", e.target.value)}
+                    className="w-full px-3 py-2 bg-near-black border border-muted-olive/50 text-off-white font-mono text-xs focus:outline-none focus:border-khaki"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[11px] font-mono uppercase tracking-wider text-off-white/70 mb-1">
                     Highlight Badge (e.g. MOST POPULAR / BEST VALUE)
                   </label>
                   <input
@@ -1004,6 +1037,19 @@ export default function AdminDashboardPage() {
                     onChange={(e) => handleUpdatePackageField(idx, "badge", e.target.value || null)}
                     className="w-full px-3 py-2 bg-near-black border border-muted-olive/50 text-off-white font-mono text-xs focus:outline-none focus:border-khaki"
                   />
+                </div>
+
+                <div className="flex items-center space-x-2 pt-1">
+                  <input
+                    type="checkbox"
+                    id={`popular-${idx}`}
+                    checked={Boolean(pkg.popular)}
+                    onChange={(e) => handleUpdatePackageField(idx, "popular", e.target.checked)}
+                    className="w-4 h-4 accent-[#B5A878] rounded cursor-pointer"
+                  />
+                  <label htmlFor={`popular-${idx}`} className="text-xs font-mono text-khaki uppercase cursor-pointer">
+                    Featured / Gold Border Glow Highlight
+                  </label>
                 </div>
 
                 <div>

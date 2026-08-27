@@ -27,7 +27,7 @@ import {
   Zap,
 } from "lucide-react";
 
-const PRICING_OPTIONS = [
+const DEFAULT_PRICING_OPTIONS = [
   {
     id: "4-weeks",
     name: "4 WEEKS",
@@ -65,10 +65,28 @@ const PRICING_OPTIONS = [
 
 export default function ApplicationModal() {
   const { isApplicationOpen, closeApplicationModal, selectedPlan } = useModal();
-  const { saveApplicationLead, coachWhatsAppNumber } = useSiteContent();
+  const { saveApplicationLead, coachWhatsAppNumber, content } = useSiteContent();
   const [currentStep, setCurrentStep] = useState(1);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [copied, setCopied] = useState(false);
+
+  // Dynamic pricing options from CMS / Firestore content
+  const pricingOptions = useMemo(() => {
+    if (content?.pricing?.packages && content.pricing.packages.length > 0) {
+      return content.pricing.packages.map((pkg) => ({
+        id: pkg.id,
+        name: pkg.name,
+        price: pkg.price,
+        numericPrice: pkg.numericPrice || parseInt(String(pkg.price).replace(/,/g, ""), 10) || 0,
+        title: pkg.title,
+        duration: pkg.duration || pkg.name,
+        durationLabel: pkg.durationLabel || `${pkg.name} DURATION`,
+        badge: pkg.badge,
+        highlight: pkg.highlight || pkg.description || "1-on-1 Transformation Protocol",
+      }));
+    }
+    return DEFAULT_PRICING_OPTIONS;
+  }, [content?.pricing?.packages]);
 
   // Form State matching all questions + pricing package
   const [formData, setFormData] = useState({
@@ -103,7 +121,7 @@ export default function ApplicationModal() {
   useEffect(() => {
     if (typeof selectedPlan === "string" && selectedPlan.trim()) {
       const planStr = selectedPlan.trim().toLowerCase();
-      const match = PRICING_OPTIONS.find(
+      const match = pricingOptions.find(
         (p) => p.id === selectedPlan || planStr.includes(p.id) || planStr.includes(p.name.toLowerCase())
       );
       if (match) {
@@ -113,7 +131,7 @@ export default function ApplicationModal() {
         }));
       }
     }
-  }, [selectedPlan, isApplicationOpen]);
+  }, [selectedPlan, isApplicationOpen, pricingOptions]);
 
   // Lock body scroll when modal is open
   useEffect(() => {
@@ -148,20 +166,21 @@ export default function ApplicationModal() {
   // Current active plan object
   const activePlan = useMemo(() => {
     return (
-      PRICING_OPTIONS.find((p) => p.id === formData.selectedPlan) ||
-      PRICING_OPTIONS[1]
+      pricingOptions.find((p) => p.id === formData.selectedPlan) ||
+      pricingOptions[1] ||
+      pricingOptions[0]
     );
-  }, [formData.selectedPlan]);
+  }, [formData.selectedPlan, pricingOptions]);
 
   // Slider Index (0 = 4w, 1 = 8w, 2 = 12w)
   const currentPlanIndex = useMemo(() => {
-    const idx = PRICING_OPTIONS.findIndex((p) => p.id === formData.selectedPlan);
-    return idx >= 0 ? idx : 1;
-  }, [formData.selectedPlan]);
+    const idx = pricingOptions.findIndex((p) => p.id === formData.selectedPlan);
+    return idx >= 0 ? idx : 0;
+  }, [formData.selectedPlan, pricingOptions]);
 
   const handleSliderChange = (e) => {
     const idx = parseInt(e.target.value, 10);
-    const chosen = PRICING_OPTIONS[idx];
+    const chosen = pricingOptions[idx];
     if (chosen) {
       handleChange("selectedPlan", chosen.id);
     }
@@ -402,7 +421,7 @@ export default function ApplicationModal() {
                           <input
                             type="range"
                             min="0"
-                            max="2"
+                            max={Math.max(0, pricingOptions.length - 1)}
                             step="1"
                             value={currentPlanIndex}
                             onChange={handleSliderChange}
@@ -412,21 +431,20 @@ export default function ApplicationModal() {
                         </div>
 
                         <div className="flex justify-between text-[10px] font-mono tracking-wider text-off-white/60 px-1">
-                          <span className={currentPlanIndex === 0 ? "text-khaki font-bold" : ""}>
-                            4 WEEKS
-                          </span>
-                          <span className={currentPlanIndex === 1 ? "text-khaki font-bold" : ""}>
-                            8 WEEKS (POPULAR)
-                          </span>
-                          <span className={currentPlanIndex === 2 ? "text-khaki font-bold" : ""}>
-                            12 WEEKS (BEST VALUE)
-                          </span>
+                          {pricingOptions.map((opt, idx) => (
+                            <span
+                              key={opt.id || idx}
+                              className={currentPlanIndex === idx ? "text-khaki font-bold" : ""}
+                            >
+                              {opt.name} {opt.badge ? `(${opt.badge})` : ""}
+                            </span>
+                          ))}
                         </div>
                       </div>
 
-                      {/* 3 Clickable Option Cards */}
-                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-1">
-                        {PRICING_OPTIONS.map((opt, idx) => {
+                      {/* Clickable Option Cards */}
+                      <div className={`grid grid-cols-1 ${pricingOptions.length <= 2 ? "sm:grid-cols-2" : "sm:grid-cols-3"} gap-2.5 pt-1`}>
+                        {pricingOptions.map((opt, idx) => {
                           const isSelected = formData.selectedPlan === opt.id;
                           return (
                             <button

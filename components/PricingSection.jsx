@@ -86,11 +86,13 @@ export default function PricingSection() {
             2. 3-TIER PRICING CARDS WITH RICH HOVER EFFECTS
            ==================================================== */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 max-w-6xl mx-auto items-stretch">
-          {pricingData.packages.map((pkg, idx) => {
-            const isPopular = pkg.popular;
+          {(pricingData.packages || fallbackSiteData.pricing.packages).map((pkg, idx) => {
+            const isPopular = Boolean(pkg.popular || (pkg.badge && pkg.badge.toLowerCase().includes("popular")));
+            const displayCurrency = pkg.currency || "INR";
+            const displayDuration = pkg.durationLabel || `${pkg.name} PROTOCOL`;
             return (
               <motion.div
-                key={pkg.id}
+                key={pkg.id || idx}
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 whileHover={{ y: -10, scale: 1.02 }}
@@ -145,12 +147,12 @@ export default function PricingSection() {
                         {pkg.price}
                       </span>
                       <span className="text-xs font-mono text-off-white/60 uppercase tracking-widest">
-                        {pkg.currency}
+                        {displayCurrency}
                       </span>
                     </div>
                     <div className="flex items-center space-x-1.5 mt-1.5 text-[11px] font-mono text-off-white/70">
                       <Clock className="w-3.5 h-3.5 text-khaki" />
-                      <span>{pkg.durationLabel} // 1-ON-1 DIRECT</span>
+                      <span>{displayDuration} // 1-ON-1 DIRECT</span>
                     </div>
                   </div>
 
