@@ -17,7 +17,7 @@ import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 /**
  * Compresses an image file before base64 encoding to keep Firestore / LocalStorage fast and lightweight.
  */
-function compressImageToDataUrl(file, maxWidth = 1600, quality = 0.85) {
+function compressImageToDataUrl(file, maxWidth = 900, quality = 0.75) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.readAsDataURL(file);
@@ -40,9 +40,16 @@ function compressImageToDataUrl(file, maxWidth = 1600, quality = 0.85) {
         const ctx = canvas.getContext("2d");
         ctx.drawImage(img, 0, 0, width, height);
 
-        // Export as WebP or JPEG
-        const mimeType = file.type === "image/png" ? "image/png" : "image/jpeg";
-        const dataUrl = canvas.toDataURL(mimeType, quality);
+        // Export as WebP or JPEG for lightweight storage
+        try {
+          const webpUrl = canvas.toDataURL("image/webp", quality);
+          if (webpUrl && webpUrl.startsWith("data:image/webp")) {
+            return resolve(webpUrl);
+          }
+        } catch (e) {
+          // fallback
+        }
+        const dataUrl = canvas.toDataURL("image/jpeg", quality);
         resolve(dataUrl);
       };
       img.onerror = (err) => reject(err);

@@ -304,32 +304,48 @@ export default function AdminDashboardPage() {
     };
 
     setIsSaving(true);
-    if (editingCert) {
-      await updateCertification(editingCert.id, payload);
-      showToast("Certification record updated!");
-    } else {
-      await addCertification(payload);
-      showToast("New certification added to website!");
+    try {
+      if (editingCert) {
+        const res = await updateCertification(editingCert.id, payload);
+        showToast(res?.message || "Certification record updated!");
+      } else {
+        const res = await addCertification(payload);
+        showToast(res?.message || "New certification added to website!");
+      }
+      setIsCertModalOpen(false);
+    } catch (err) {
+      console.error("Save cert error:", err);
+      showToast("Could not save certificate: " + (err.message || "Unknown error"), "error");
+    } finally {
+      setIsSaving(false);
     }
-    setIsSaving(false);
-    setIsCertModalOpen(false);
   };
 
   const handleDeleteCert = async (id) => {
     if (window.confirm("Are you sure you want to delete this certificate record?")) {
       setIsSaving(true);
-      await deleteCertification(id);
-      setIsSaving(false);
-      showToast("Certificate removed.");
+      try {
+        await deleteCertification(id);
+        showToast("Certificate removed.");
+      } catch (err) {
+        showToast("Error deleting certificate", "error");
+      } finally {
+        setIsSaving(false);
+      }
     }
   };
 
   const handleSaveCertConfig = async (e) => {
     e.preventDefault();
     setIsSaving(true);
-    const res = await saveCertificationsConfig(certConfigForm);
-    setIsSaving(false);
-    showToast(res.message || "Credentials header & stats updated!");
+    try {
+      const res = await saveCertificationsConfig(certConfigForm);
+      showToast(res?.message || "Credentials header & stats updated!");
+    } catch (err) {
+      showToast("Error saving credentials config", "error");
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const handleUpdateCertStat = (index, field, value) => {
@@ -342,19 +358,24 @@ export default function AdminDashboardPage() {
   const handleSaveHeroAndWorkshop = async (e) => {
     e.preventDefault();
     setIsSaving(true);
-    const updated = {
-      hero: {
-        ...(content?.hero || {}),
-        ...heroForm,
-      },
-      jalandharWorkshop: {
-        ...(content?.jalandharWorkshop || {}),
-        ...workshopForm,
-      },
-    };
-    const res = await saveSiteContent(updated);
-    setIsSaving(false);
-    showToast(res.message || "Hero & Workshop updated successfully!");
+    try {
+      const updated = {
+        hero: {
+          ...(content?.hero || {}),
+          ...heroForm,
+        },
+        jalandharWorkshop: {
+          ...(content?.jalandharWorkshop || {}),
+          ...workshopForm,
+        },
+      };
+      const res = await saveSiteContent(updated);
+      showToast(res?.message || "Hero & Workshop updated successfully!");
+    } catch (err) {
+      showToast("Error saving hero/workshop", "error");
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   // Save Pricing Packages
@@ -457,14 +478,21 @@ export default function AdminDashboardPage() {
       return;
     }
 
-    if (editingTrans) {
-      await updateTransformation(editingTrans.id, transFormData);
-      showToast("Transformation updated!");
-    } else {
-      await addTransformation(transFormData);
-      showToast("New transformation added to gallery!");
+    setIsSaving(true);
+    try {
+      if (editingTrans) {
+        await updateTransformation(editingTrans.id, transFormData);
+        showToast("Transformation updated!");
+      } else {
+        await addTransformation(transFormData);
+        showToast("New transformation added to gallery!");
+      }
+      setIsTransModalOpen(false);
+    } catch (err) {
+      showToast("Error saving transformation: " + (err.message || "Unknown error"), "error");
+    } finally {
+      setIsSaving(false);
     }
-    setIsTransModalOpen(false);
   };
 
   const handleDeleteTransformation = async (id) => {
