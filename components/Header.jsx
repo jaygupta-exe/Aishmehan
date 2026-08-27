@@ -2,11 +2,14 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { siteData } from "@/data/siteData";
+import { siteData as fallbackSiteData } from "@/data/siteData";
+import { useSiteContent } from "@/context/DataContext";
 import { useModal } from "@/context/ModalContext";
 
 export default function Header() {
   const { openApplicationModal } = useModal();
+  const { content } = useSiteContent();
+  const siteData = content || fallbackSiteData;
   const [isScrolled, setIsScrolled] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);

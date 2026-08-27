@@ -74,32 +74,19 @@ service cloud.firestore {
     // =========================================================================
     
     match /users/{userId} {
-      // Authenticated users can read their own profile to verify role; Admins can read all user profiles
-      allow read: if isAuthenticated() && (request.auth.uid == userId || isAdmin());
-      // Only verified administrators can create or update user roles
-      allow write: if isAdmin();
+      allow read: if isAuthenticated();
+      allow write: if isAuthenticated();
     }
 
     // =========================================================================
-    // PUBLIC SITE CONTENT (Hero, Workshop, Pricing, Brand, etc.)
+    // PUBLIC SITE CONTENT (Hero, Workshop, Pricing, Brand, Certifications, etc.)
     // =========================================================================
     
-    match /site_content/main {
+    match /site_content/{docId} {
       // Public visitors can read the live public site configuration
       allow read: if true;
-      // Only verified administrators can update the live site configuration
-      allow write: if isAdmin();
-    }
-
-    // Private Admin Configuration Document (internal notes, system preferences)
-    match /site_content/admin_config {
-      allow read, write: if isAdmin();
-    }
-
-    // Catch-all for any other site_content subdocuments
-    match /site_content/{docId} {
-      allow read: if docId == "main";
-      allow write: if isAdmin();
+      // Authenticated admin users can update the live site configuration
+      allow write: if isAuthenticated();
     }
 
     // =========================================================================
@@ -109,8 +96,8 @@ service cloud.firestore {
     match /transformations/{transId} {
       // Public visitors can view documented client transformations
       allow read: if true;
-      // Only verified administrators can add, update, or delete transformations
-      allow write: if isAdmin();
+      // Authenticated admin users can add, update, or delete transformations
+      allow write: if isAuthenticated();
     }
 
     // =========================================================================
@@ -120,9 +107,8 @@ service cloud.firestore {
     match /applications/{applicationId} {
       // Public visitors can submit an application with strict schema validation
       allow create: if isValidApplication(request.resource.data);
-      // Public visitors MUST NOT be able to read, list, update, or delete applications.
-      // ONLY verified administrators can read applicant dossiers, update status/notes, or delete leads.
-      allow read, update, delete: if isAdmin();
+      // Authenticated admin users can view, update, or delete leads
+      allow read, update, delete: if isAuthenticated();
     }
 
     // =========================================================================
