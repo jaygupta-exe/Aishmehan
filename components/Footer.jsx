@@ -119,7 +119,7 @@ export default function Footer() {
             <div className="relative w-full md:w-5/12 flex-shrink-0 flex items-center justify-center">
               <div className="relative max-w-[240px] sm:max-w-[260px] mx-auto py-2">
                 <img
-                  src="/images/supplements.png"
+                  src="/images/supplements.webp"
                   alt="Stage & Steel Mocha Protein and Creatine Monohydrate"
                   className="w-full h-auto object-contain drop-shadow-[0_15px_30px_rgba(0,0,0,0.85)] group-hover:scale-105 transition-transform duration-500"
                 />

@@ -110,7 +110,7 @@ export default function JalandharWorkshop() {
               {/* Chamfered Image Container with annoucment.png */}
               <div className="relative aspect-[3/4] sm:aspect-[4/5] lg:aspect-[3/4] w-full overflow-hidden bg-near-black border border-muted-olive/50 shadow-2xl clip-chamfer-btn">
                 <img
-                  src="/images/annoucment.png"
+                  src="/images/annoucment.webp"
                   alt="Aish Mehan - Jalandhar Fitness Workshop Announcement"
                   className="w-full h-full object-cover object-top transition-transform duration-700 group-hover:scale-105"
                 />

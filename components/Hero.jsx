@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { siteData as fallbackSiteData } from "@/data/siteData";
 import { useModal } from "@/context/ModalContext";
 import { useSiteContent } from "@/context/DataContext";
@@ -10,29 +10,52 @@ export default function Hero() {
   const { content } = useSiteContent();
   const heroData = content?.hero || fallbackSiteData.hero;
   const videoRef = useRef(null);
+  const [videoLoaded, setVideoLoaded] = useState(false);
 
   useEffect(() => {
     if (videoRef.current) {
-      videoRef.current.play().catch((err) => {
-        console.log("Autoplay prevented:", err);
-      });
+      const playPromise = videoRef.current.play();
+      if (playPromise !== undefined) {
+        playPromise
+          .then(() => {
+            setVideoLoaded(true);
+          })
+          .catch((err) => {
+            console.log("Autoplay prevented:", err);
+          });
+      }
     }
   }, []);
 
   return (
     <section className="relative w-full min-h-[100svh] flex flex-col justify-end overflow-hidden bg-near-black">
-      {/* Background Video Layer */}
+      {/* Background Video & Poster Layer */}
       <div className="absolute inset-0 w-full h-full z-0 overflow-hidden">
+        {/* Instant Lightweight Poster for LCP & immediate visual feedback */}
+        <img
+          src={heroData.posterSrc || "/images/hero-poster.webp"}
+          alt="Aish Mehan Transformation Hero Poster"
+          fetchPriority="high"
+          className={`absolute inset-0 w-full h-full object-cover object-center opacity-95 contrast-[1.04] saturate-[1.08] transition-opacity duration-700 ${
+            videoLoaded ? "opacity-0 pointer-events-none" : "opacity-95"
+          }`}
+        />
+
+        {/* Lightweight Compressed Video with Multi-Source Support */}
         <video
           ref={videoRef}
-          src={heroData.videoSrc || "/hero.mp4"}
+          poster={heroData.posterSrc || "/images/hero-poster.webp"}
           autoPlay
           muted
           loop
           playsInline
-          preload="auto"
+          preload="metadata"
+          onPlaying={() => setVideoLoaded(true)}
           className="w-full h-full object-cover object-center opacity-95 contrast-[1.04] saturate-[1.08]"
-        />
+        >
+          <source src="/hero.webm" type="video/webm" />
+          <source src={heroData.videoSrc || "/hero.mp4"} type="video/mp4" />
+        </video>
 
         {/* Sophisticated Dark Gradient Overlays */}
         <div className="absolute inset-0 bg-gradient-to-t from-near-black/90 via-near-black/25 to-transparent" />

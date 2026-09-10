@@ -20,8 +20,10 @@ export default function SupplementSection() {
           >
             <div className="relative w-full max-w-sm sm:max-w-md mx-auto group">
               <img
-                src="/images/supplements.png"
+                src="/images/supplements.webp"
                 alt="Stage & Steel Mocha Protein and Creatine Monohydrate"
+                loading="lazy"
+                decoding="async"
                 className="w-full h-auto max-h-[360px] sm:max-h-[420px] object-contain drop-shadow-2xl transition-transform duration-500 group-hover:scale-105"
               />
             </div>

@@ -35,7 +35,7 @@ export const siteData = {
 
   hero: {
     videoSrc: "/hero.mp4",
-    posterSrc: "/images/hero-poster.jpg",
+    posterSrc: "/images/hero-poster.webp",
     eyebrow: "ONLINE TRANSFORMATION COACHING",
     headlineMain: "ENGINEER YOUR",
     headlineAccent: "STRONGEST SELF.",
@@ -210,7 +210,7 @@ export const siteData = {
     eyebrow: "THE HEAD COACH",
     name: "DIVESH MEHAN (AISH)",
     title: "TRANSFORMATION ARCHITECT & PERFORMANCE SPECIALIST",
-    image: "/images/about.png",
+    image: "/images/about.webp",
   },
 
   pricing: {
@@ -295,7 +295,7 @@ export const siteData = {
         date: "USA National Circuit",
         issuingAuthority: "National Physique Committee (NPC) Florida / USA",
         regNo: "NPC-USA-MIA-3X",
-        image: "/images/npc-miami-champion.jpg",
+        image: "/images/npc-miami-champion.webp",
         highlights: [
           "3-Time 1st Place Gold Medal Champion at NPC Miami, USA",
           "Competitive Bodybuilding Stage Titleholder in the United States",
@@ -315,7 +315,7 @@ export const siteData = {
         date: "December 10, 2022",
         issuingAuthority: "Louis Zwick (President, Musclemania International)",
         regNo: "MM-ASIA-2022-WIN",
-        image: "/images/Aisa certificate 2022.png",
+        image: "/images/Aisa certificate 2022.webp",
         highlights: [
           "1st Place Gold Medal Champion across all Asian competitors",
           "100% Lifetime Natural & Drug-Free Standard",
@@ -335,7 +335,7 @@ export const siteData = {
         date: "Awarded 25th July 2026",
         issuingAuthority: "Dr. Luqman Shaikh (PT), Founder Prehab 121 Academy",
         regNo: "CES062989",
-        image: "/images/certificate of completion.png",
+        image: "/images/certificate of completion.webp",
         highlights: [
           "American Council on Exercise (ACE) Approved Provider (2.0 CECs - CEP205013)",
           "American College of Sports Medicine (ACSM) Approved Provider (20 CECs - 885783)",
@@ -355,7 +355,7 @@ export const siteData = {
         date: "Valid Through 22 June 2027",
         issuingAuthority: "EuropeActive Professional Standards Committee",
         regNo: "151544",
-        image: "/images/EREPS certificate.png",
+        image: "/images/EREPS certificate.webp",
         highlights: [
           "Admitted to the official European Register of Exercise Professionals",
           "Highest European Qualification Framework (EQF Level 4) standard",
@@ -375,7 +375,7 @@ export const siteData = {
         date: "December 8, 2019",
         issuingAuthority: "Louis Zwick (President, Musclemania International)",
         regNo: "MM-IND-2019-CHAMP",
-        image: "/images/muscle mania india.png",
+        image: "/images/muscle mania india.webp",
         highlights: [
           "Gold Medal National Titleholder at Musclemania India",
           "Tested & Verified Drug-Free Physique Excellence",
@@ -395,7 +395,7 @@ export const siteData = {
         date: "Valid Through 24/04/2028",
         issuingAuthority: "Dr. Chirag Sethi (MD) & Lagan Rai McPereira (TD)",
         regNo: "CFA/CPT/12577",
-        image: "/images/class fitness academy.png",
+        image: "/images/class fitness academy.webp",
         highlights: [
           "EuropeActive & EREPS Affiliated Master Trainer Program",
           "Comprehensive Theoretical & Practical Exercise Science Examination",

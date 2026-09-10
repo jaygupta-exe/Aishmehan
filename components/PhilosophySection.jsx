@@ -64,8 +64,10 @@ export default function PhilosophySection() {
           {/* Coach Cutout Portrait with philosophy.jpeg */}
           <div className="relative z-10 aspect-[4/5] overflow-hidden bg-near-black shadow-2xl border border-muted-olive/30">
             <img
-              src="/images/philosophy.jpeg"
+              src="/images/philosophy.webp"
               alt="Elite Transformation Coach - Aish Mehan"
+              loading="lazy"
+              decoding="async"
               className="w-full h-full object-cover object-center"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-near-black via-transparent to-transparent opacity-60" />

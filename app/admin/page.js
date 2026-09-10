@@ -160,7 +160,7 @@ export default function AdminDashboardPage() {
     date: "",
     issuingAuthority: "",
     regNo: "",
-    image: "/images/Aisa certificate 2022.png",
+    image: "/images/Aisa certificate 2022.webp",
     highlightsText: "",
     verificationNote: "",
   });
@@ -450,7 +450,7 @@ export default function AdminDashboardPage() {
       category: "Fat Loss",
       timeframe: "12 Weeks",
       metrics: "",
-      src: "/images/before after 1.JPG",
+      src: "/images/before after 1.webp",
       quote: "",
       clientName: "Client",
     });
@@ -1137,7 +1137,7 @@ export default function AdminDashboardPage() {
                       alt={item.title || `Transformation ${idx + 1}`}
                       className="w-full h-full object-cover"
                       onError={(e) => {
-                        e.currentTarget.src = "/images/before after 1.JPG";
+                        e.currentTarget.src = "/images/before after 1.webp";
                       }}
                     />
                     <div className="absolute top-2 left-2 px-2 py-0.5 bg-near-black/90 border border-khaki text-[10px] font-mono text-khaki uppercase">
@@ -1708,11 +1708,11 @@ export default function AdminDashboardPage() {
                 onChange={(newSrc) => setTransFormData({ ...transFormData, src: newSrc })}
                 storageFolder="transformations"
                 presets={[
-                  { label: "Before/After 1", path: "/images/before after 1.JPG" },
-                  { label: "Before/After 2", path: "/images/before after 2.JPG" },
-                  { label: "Before/After 3", path: "/images/before after 3.JPG" },
-                  { label: "Before/After 4", path: "/images/before after 4.JPG" },
-                  { label: "Before/After 5", path: "/images/before after 5.JPG" },
+                  { label: "Before/After 1", path: "/images/before after 1.webp" },
+                  { label: "Before/After 2", path: "/images/before after 2.webp" },
+                  { label: "Before/After 3", path: "/images/before after 3.webp" },
+                  { label: "Before/After 4", path: "/images/before after 4.webp" },
+                  { label: "Before/After 5", path: "/images/before after 5.webp" },
                 ]}
               />
 
@@ -2039,12 +2039,12 @@ export default function AdminDashboardPage() {
                 onChange={(newImage) => setCertFormData({ ...certFormData, image: newImage })}
                 storageFolder="certificates"
                 presets={[
-                  { label: "NPC Miami Trophy", path: "/images/npc-miami-champion.jpg" },
+                  { label: "NPC Miami Trophy", path: "/images/npc-miami-champion.webp" },
                   { label: "Musclemania Asia", path: "/images/Aisa certificate 2022.png" },
-                  { label: "Prehab 121 CES", path: "/images/certificate of completion.png" },
-                  { label: "EREPS Level 4", path: "/images/EREPS certificate.png" },
-                  { label: "Musclemania India", path: "/images/muscle mania india.png" },
-                  { label: "Classic Fitness CFA", path: "/images/class fitness academy.png" },
+                  { label: "Prehab 121 CES", path: "/images/certificate of completion.webp" },
+                  { label: "EREPS Level 4", path: "/images/EREPS certificate.webp" },
+                  { label: "Musclemania India", path: "/images/muscle mania india.webp" },
+                  { label: "Classic Fitness CFA", path: "/images/class fitness academy.webp" },
                 ]}
               />
 

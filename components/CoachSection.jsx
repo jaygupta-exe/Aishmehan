@@ -89,7 +89,7 @@ export default function CoachSection() {
           >
             <div className="relative w-full aspect-[4/5] sm:aspect-[3/4] lg:aspect-auto lg:h-full min-h-[460px] sm:min-h-[560px] lg:min-h-[720px] max-w-md sm:max-w-lg lg:max-w-none mx-auto overflow-hidden flex items-start justify-center">
               <img
-                src="/images/about.png"
+                src="/images/about.webp"
                 alt="Divesh Mehan (Aish) - Head Transformation Coach"
                 className="w-full h-auto object-cover object-top scale-[1.38] origin-top translate-y-[-2%] drop-shadow-2xl"
               />
@@ -188,8 +188,10 @@ export default function CoachSection() {
             >
               <div className="flex items-center justify-center py-2 sm:py-3">
                 <img
-                  src="/images/stage-and-steel.png"
+                  src="/images/stage-and-steel.webp"
                   alt="Stage & Steel Supplements"
+                  loading="lazy"
+                  decoding="async"
                   className="w-full max-w-[300px] sm:max-w-[420px] md:max-w-[480px] h-auto object-contain transition-transform duration-300 group-hover:scale-105"
                 />
               </div>
