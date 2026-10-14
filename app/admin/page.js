@@ -120,6 +120,27 @@ export default function AdminDashboardPage() {
     ]
   );
 
+  const [liveSessionForm, setLiveSessionForm] = useState({
+    title: content?.pricing?.liveVideoSession?.title || "1-ON-1 LIVE VIDEO SESSION",
+    price: content?.pricing?.liveVideoSession?.price || "800",
+    rateUnit: content?.pricing?.liveVideoSession?.rateUnit || "/ Hour",
+    badge: content?.pricing?.liveVideoSession?.badge || "HOURLY INTENSIVE // ₹800/HR",
+    subtitle:
+      content?.pricing?.liveVideoSession?.subtitle ||
+      "60-Minute Direct Private Session with Coach Divesh Mehan (Aish)",
+    description:
+      content?.pricing?.liveVideoSession?.description ||
+      "Book an intensive 60-minute private video call directly with Coach Divesh Mehan (Aish). Real-time exercise form analysis, personalized diet review, injury prehab consultation, or customized Q&A.",
+    highlightsText: (
+      content?.pricing?.liveVideoSession?.highlights || [
+        "60-Minute 1-on-1 Private High-Definition Video Call",
+        "Real-Time Exercise Form & Biomechanical Correction",
+        "Personalized Nutrition, Calorie & Macro Q&A Breakdown",
+        "Joint Prehab, Mobility & Corrective Rehab Protocol",
+      ]
+    ).join("\n"),
+  });
+
   const [settingsForm, setSettingsForm] = useState({
     coachWhatsAppNumber: content?.COACH_WHATSAPP_NUMBER || "919779159169",
     brandName: content?.brand?.name || "AISH MEHAN",
@@ -191,6 +212,21 @@ export default function AdminDashboardPage() {
       }
       if (content.pricing?.packages && content.pricing.packages.length > 0) {
         setPricingPackages(content.pricing.packages);
+      }
+      if (content.pricing?.liveVideoSession) {
+        const lvs = content.pricing.liveVideoSession;
+        setLiveSessionForm((prev) => ({
+          ...prev,
+          title: lvs.title || prev.title,
+          price: lvs.price || prev.price,
+          rateUnit: lvs.rateUnit || prev.rateUnit,
+          badge: lvs.badge || prev.badge,
+          subtitle: lvs.subtitle || prev.subtitle,
+          description: lvs.description || prev.description,
+          highlightsText: Array.isArray(lvs.highlights)
+            ? lvs.highlights.join("\n")
+            : prev.highlightsText,
+        }));
       }
       if (content.certifications) {
         setCertConfigForm((prev) => ({
@@ -393,6 +429,19 @@ export default function AdminDashboardPage() {
       pricing: {
         ...(content?.pricing || {}),
         packages: sanitizedPackages,
+        liveVideoSession: {
+          id: "live-video-session",
+          title: liveSessionForm.title,
+          price: liveSessionForm.price,
+          numericPrice: parseInt(String(liveSessionForm.price).replace(/,/g, ""), 10) || 800,
+          rateUnit: liveSessionForm.rateUnit || "/ Hour",
+          badge: liveSessionForm.badge,
+          subtitle: liveSessionForm.subtitle,
+          description: liveSessionForm.description,
+          highlights: liveSessionForm.highlightsText.split("\n").map((s) => s.trim()).filter(Boolean),
+          ctaText: `BOOK LIVE SESSION (₹${liveSessionForm.price}/HR)`,
+          whatsappCtaText: "BOOK VIA WHATSAPP",
+        },
       },
     };
     const res = await saveSiteContent(updated);
@@ -1093,6 +1142,98 @@ export default function AdminDashboardPage() {
                 </div>
               </div>
             ))}
+          </div>
+
+          {/* Live Video Session (₹800/hr) Configuration Card */}
+          <div className="bg-deep-olive/80 border-2 border-khaki/70 p-6 clip-chamfer-btn space-y-4 relative shadow-lg">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-muted-olive/50 pb-3 gap-2">
+              <div className="flex items-center space-x-2">
+                <span className="w-2.5 h-2.5 rounded-full bg-khaki animate-pulse" />
+                <h4 className="font-geo font-black text-base uppercase text-off-white tracking-wider">
+                  FEATURED SERVICE: 1-ON-1 LIVE VIDEO SESSION
+                </h4>
+              </div>
+              <span className="text-xs font-mono text-khaki uppercase bg-near-black px-2.5 py-1 border border-khaki/40">
+                ₹{liveSessionForm.price} {liveSessionForm.rateUnit}
+              </span>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div>
+                <label className="block text-[11px] font-mono uppercase tracking-wider text-off-white/70 mb-1">
+                  Service Title
+                </label>
+                <input
+                  type="text"
+                  value={liveSessionForm.title}
+                  onChange={(e) => setLiveSessionForm({ ...liveSessionForm, title: e.target.value })}
+                  className="w-full px-3 py-2 bg-near-black border border-muted-olive/50 text-off-white font-mono text-xs focus:outline-none focus:border-khaki"
+                />
+              </div>
+
+              <div>
+                <label className="block text-[11px] font-mono uppercase tracking-wider text-off-white/70 mb-1">
+                  Hourly Rate (INR)
+                </label>
+                <div className="relative">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-khaki font-bold text-xs">₹</span>
+                  <input
+                    type="text"
+                    value={liveSessionForm.price}
+                    onChange={(e) => setLiveSessionForm({ ...liveSessionForm, price: e.target.value })}
+                    className="w-full pl-7 pr-3 py-2 bg-near-black border border-muted-olive/50 text-off-white font-mono text-xs focus:outline-none focus:border-khaki"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-[11px] font-mono uppercase tracking-wider text-off-white/70 mb-1">
+                  Badge Label
+                </label>
+                <input
+                  type="text"
+                  value={liveSessionForm.badge}
+                  onChange={(e) => setLiveSessionForm({ ...liveSessionForm, badge: e.target.value })}
+                  className="w-full px-3 py-2 bg-near-black border border-muted-olive/50 text-off-white font-mono text-xs focus:outline-none focus:border-khaki"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-[11px] font-mono uppercase tracking-wider text-off-white/70 mb-1">
+                Subtitle Tagline
+              </label>
+              <input
+                type="text"
+                value={liveSessionForm.subtitle}
+                onChange={(e) => setLiveSessionForm({ ...liveSessionForm, subtitle: e.target.value })}
+                className="w-full px-3 py-2 bg-near-black border border-muted-olive/50 text-off-white font-mono text-xs focus:outline-none focus:border-khaki"
+              />
+            </div>
+
+            <div>
+              <label className="block text-[11px] font-mono uppercase tracking-wider text-off-white/70 mb-1">
+                Description
+              </label>
+              <textarea
+                rows={2}
+                value={liveSessionForm.description}
+                onChange={(e) => setLiveSessionForm({ ...liveSessionForm, description: e.target.value })}
+                className="w-full px-3 py-2 bg-near-black border border-muted-olive/50 text-off-white font-mono text-xs focus:outline-none focus:border-khaki"
+              />
+            </div>
+
+            <div>
+              <label className="block text-[11px] font-mono uppercase tracking-wider text-off-white/70 mb-1">
+                Bullet Highlights (One per line)
+              </label>
+              <textarea
+                rows={3}
+                value={liveSessionForm.highlightsText}
+                onChange={(e) => setLiveSessionForm({ ...liveSessionForm, highlightsText: e.target.value })}
+                className="w-full px-3 py-2 bg-near-black border border-muted-olive/50 text-off-white font-mono text-xs focus:outline-none focus:border-khaki"
+              />
+            </div>
           </div>
         </div>
       )}

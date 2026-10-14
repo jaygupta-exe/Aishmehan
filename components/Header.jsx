@@ -119,8 +119,21 @@ export default function Header() {
             </span>
           </a>
 
-          {/* Right: Tactical Bracketed CTA Button */}
-          <div className="flex items-center">
+          {/* Right: Tactical Bracketed CTA Button & Highlighted Live Session Option */}
+          <div className="flex items-center space-x-2 sm:space-x-3">
+            {/* Live Session Quick-Action Highlight Button */}
+            <button
+              type="button"
+              onClick={() => openApplicationModal("live-video-session")}
+              className="hidden sm:inline-flex items-center space-x-1.5 px-3 sm:px-4 py-2 border-2 border-khaki/80 bg-near-black text-khaki font-geo font-black text-[11px] sm:text-xs tracking-wider uppercase clip-chamfer-btn hover:bg-khaki hover:text-near-black transition-all duration-200 shadow-[0_0_15px_rgba(181,168,120,0.3)] cursor-pointer group"
+            >
+              <span className="w-2 h-2 rounded-full bg-khaki group-hover:bg-near-black animate-pulse" />
+              <span>LIVE SESSION</span>
+              <span className="font-mono text-[10px] bg-khaki text-near-black group-hover:bg-near-black group-hover:text-khaki px-1.5 py-0.2 font-black transition-colors">
+                ₹800/HR
+              </span>
+            </button>
+
             <div className="tactical-bracket-btn">
               <button
                 type="button"
@@ -168,17 +181,31 @@ export default function Header() {
               </div>
 
               <div className="pt-8 border-t border-muted-olive/30 flex flex-col sm:flex-row items-center justify-between gap-4">
-                <div className="tactical-bracket-btn w-full sm:w-auto">
+                <div className="w-full sm:w-auto flex flex-col sm:flex-row gap-2.5">
+                  {/* Mobile Live Session Highlight Button */}
                   <button
                     type="button"
                     onClick={() => {
                       setMobileMenuOpen(false);
-                      openApplicationModal();
+                      openApplicationModal("live-video-session");
                     }}
-                    className="w-full sm:w-auto px-8 py-3.5 text-center bg-khaki text-near-black font-geo font-bold text-sm tracking-widest uppercase clip-chamfer-btn shadow-glow-khaki block cursor-pointer"
+                    className="w-full sm:w-auto px-6 py-3.5 text-center bg-near-black border-2 border-khaki text-khaki font-geo font-bold text-xs tracking-widest uppercase clip-chamfer-btn shadow-[0_0_20px_rgba(181,168,120,0.3)] block cursor-pointer"
                   >
-                    {siteData.header.ctaLabel}
+                    ● 1-ON-1 LIVE VIDEO SESSION (₹800/HR)
                   </button>
+
+                  <div className="tactical-bracket-btn w-full sm:w-auto">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setMobileMenuOpen(false);
+                        openApplicationModal();
+                      }}
+                      className="w-full sm:w-auto px-8 py-3.5 text-center bg-khaki text-near-black font-geo font-bold text-sm tracking-widest uppercase clip-chamfer-btn shadow-glow-khaki block cursor-pointer"
+                    >
+                      {siteData.header.ctaLabel}
+                    </button>
+                  </div>
                 </div>
                 <p className="text-xs font-mono tracking-wider text-off-white/40 uppercase">
                   {siteData.brand.tagline}

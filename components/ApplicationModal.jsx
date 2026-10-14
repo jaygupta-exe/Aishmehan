@@ -29,6 +29,17 @@ import {
 
 const DEFAULT_PRICING_OPTIONS = [
   {
+    id: "live-video-session",
+    name: "LIVE SESSION",
+    price: "800",
+    numericPrice: 800,
+    title: "1-on-1 Live Video Session",
+    duration: "1 Hour",
+    durationLabel: "60 MIN LIVE VIDEO CALL",
+    badge: "₹800/HR",
+    highlight: "Direct 60-min private video coaching & form correction",
+  },
+  {
     id: "4-weeks",
     name: "4 WEEKS",
     price: "6,999",
@@ -72,8 +83,9 @@ export default function ApplicationModal() {
 
   // Dynamic pricing options from CMS / Firestore content
   const pricingOptions = useMemo(() => {
+    let opts = [];
     if (content?.pricing?.packages && content.pricing.packages.length > 0) {
-      return content.pricing.packages.map((pkg) => ({
+      opts = content.pricing.packages.map((pkg) => ({
         id: pkg.id,
         name: pkg.name,
         price: pkg.price,
@@ -84,9 +96,31 @@ export default function ApplicationModal() {
         badge: pkg.badge,
         highlight: pkg.highlight || pkg.description || "1-on-1 Transformation Protocol",
       }));
+    } else {
+      opts = DEFAULT_PRICING_OPTIONS;
     }
-    return DEFAULT_PRICING_OPTIONS;
-  }, [content?.pricing?.packages]);
+
+    // Ensure live-video-session is always available
+    const hasLive = opts.some((o) => o.id === "live-video-session" || o.id === "live-session");
+    if (!hasLive) {
+      const liveData = content?.pricing?.liveVideoSession;
+      opts = [
+        {
+          id: "live-video-session",
+          name: "LIVE SESSION",
+          price: liveData?.price || "800",
+          numericPrice: liveData?.numericPrice || 800,
+          title: liveData?.title || "1-on-1 Live Video Session",
+          duration: "1 Hour",
+          durationLabel: "60 MIN LIVE VIDEO CALL",
+          badge: "₹800/HR",
+          highlight: "Direct 60-min private video coaching & form correction",
+        },
+        ...opts,
+      ];
+    }
+    return opts;
+  }, [content?.pricing?.packages, content?.pricing?.liveVideoSession]);
 
   // Form State matching all questions + pricing package
   const [formData, setFormData] = useState({
@@ -192,10 +226,39 @@ export default function ApplicationModal() {
 
   // WhatsApp Message Generator
   const generateWhatsAppMessage = () => {
+    const isLiveSession =
+      activePlan.id === "live-video-session" ||
+      activePlan.id === "live-session" ||
+      activePlan.name.toLowerCase().includes("live session");
+
     const foodPref =
       formData.foodOptions === "Other" && formData.foodOptionsOther
         ? `Other (${formData.foodOptionsOther})`
         : formData.foodOptions;
+
+    if (isLiveSession) {
+      return `🔥 *NEW 1-ON-1 LIVE VIDEO SESSION BOOKING (₹800/HR)* 🔥
+🏆 *SERVICE:* 1-on-1 Live Video Session & Biomechanical Analysis
+💳 *FEE:* ₹${activePlan.price} INR / Hour
+⏰ *PREFERRED TIMING / SLOT:* ${formData.batchTiming}
+
+━━━━━━━━━━━━━━━━━━━━
+👤 *1. APPLICANT DETAILS*
+• *Full Name:* ${formData.fullName.trim() || "Not specified"}
+• *Contact Number:* ${formData.contactNumber.trim() || "Not specified"}
+• *Email:* ${formData.email.trim() || "Not specified"}
+• *Age / Weight / Height:* ${formData.ageWeightHeight.trim() || "Not specified"}
+
+━━━━━━━━━━━━━━━━━━━━
+🏋️ *2. CONSULTATION FOCUS*
+• *Primary Goal / Topic:* ${formData.specificGoal.trim() || "Form Correction & Lifting Biomechanics"}
+• *Training Experience:* ${formData.strengthYears.trim() || "Not specified"}
+• *Known Weak Points / Injuries:* ${formData.weakPoints.trim() || formData.healthConditions.trim() || "None"}
+• *Preferred Slot / Timings:* ${formData.gymTimings.trim() || formData.batchTiming}
+
+━━━━━━━━━━━━━━━━━━━━
+⚡ *Booked via Aish Mehan Official Website*`;
+    }
 
     return `🔥 *NEW COACHING APPLICATION: AISH MEHAN* 🔥
 🏆 *PROGRAM:* 1-on-1 Online Transformation Coaching
@@ -443,7 +506,7 @@ export default function ApplicationModal() {
                       </div>
 
                       {/* Clickable Option Cards */}
-                      <div className={`grid grid-cols-1 ${pricingOptions.length <= 2 ? "sm:grid-cols-2" : "sm:grid-cols-3"} gap-2.5 pt-1`}>
+                      <div className={`grid grid-cols-1 ${pricingOptions.length <= 2 ? "sm:grid-cols-2" : pricingOptions.length === 3 ? "sm:grid-cols-3" : "sm:grid-cols-2 lg:grid-cols-4"} gap-2.5 pt-1`}>
                         {pricingOptions.map((opt, idx) => {
                           const isSelected = formData.selectedPlan === opt.id;
                           return (

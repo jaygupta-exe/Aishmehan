@@ -90,17 +90,30 @@ export default function Hero() {
             </div>
           </div>
 
-          {/* 3. Bracketed "APPLY FOR COACHING" CTA Button */}
-          <div className="mt-6 sm:mt-8 pt-2">
-            <div className="tactical-bracket-btn inline-block">
+          {/* 3. Bracketed "APPLY FOR COACHING" & Highlighted "LIVE VIDEO SESSION (₹800/HR)" */}
+          <div className="mt-6 sm:mt-8 pt-2 flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
+            <div className="tactical-bracket-btn inline-block w-full sm:w-auto">
               <button
                 type="button"
                 onClick={openApplicationModal}
-                className="inline-flex items-center justify-center px-8 sm:px-10 py-4 sm:py-4.5 bg-khaki text-near-black font-geo font-bold text-sm sm:text-base tracking-[0.18em] uppercase clip-chamfer-btn hover:bg-off-white hover:text-near-black transition-all duration-300 shadow-glow-khaki cursor-pointer"
+                className="w-full sm:w-auto inline-flex items-center justify-center px-8 sm:px-10 py-4 sm:py-4.5 bg-khaki text-near-black font-geo font-bold text-sm sm:text-base tracking-[0.18em] uppercase clip-chamfer-btn hover:bg-off-white hover:text-near-black transition-all duration-300 shadow-glow-khaki cursor-pointer"
               >
                 {heroData.primaryCta?.label || "APPLY FOR COACHING"}
               </button>
             </div>
+
+            {/* High-Impact Highlight Option: 1-on-1 Live Video Session */}
+            <button
+              type="button"
+              onClick={() => openApplicationModal("live-video-session")}
+              className="w-full sm:w-auto inline-flex items-center justify-center space-x-2.5 px-6 sm:px-7 py-3.5 sm:py-4 bg-near-black/90 border-2 border-khaki text-off-white font-geo font-black text-xs sm:text-sm tracking-[0.16em] uppercase clip-chamfer-btn hover:bg-khaki hover:text-near-black transition-all duration-300 shadow-[0_0_25px_rgba(181,168,120,0.35)] cursor-pointer group"
+            >
+              <span className="w-2.5 h-2.5 rounded-full bg-khaki group-hover:bg-near-black animate-pulse" />
+              <span>LIVE VIDEO SESSION</span>
+              <span className="px-2 py-0.5 bg-khaki text-near-black group-hover:bg-near-black group-hover:text-khaki font-mono text-xs font-black tracking-wider transition-colors">
+                ₹800/HR
+              </span>
+            </button>
           </div>
         </div>
       </div>

@@ -122,17 +122,29 @@ export default function PhilosophySection() {
             ANCESTRAL WISDOM COMBINED WITH MODERN QUANTIFICATION
           </p>
 
-          {/* GET OPTIMIZED CTA Button with Corner Brackets */}
-          <div className="mb-14 sm:mb-16">
-            <div className="tactical-bracket-btn inline-block">
+          {/* GET OPTIMIZED CTA Button & Live Video Session Highlight Option */}
+          <div className="mb-14 sm:mb-16 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4">
+            <div className="tactical-bracket-btn inline-block w-full sm:w-auto">
               <button
                 type="button"
                 onClick={openApplicationModal}
-                className="px-8 sm:px-10 py-4 bg-khaki text-near-black font-geo font-bold text-sm sm:text-base tracking-[0.2em] uppercase clip-chamfer-btn hover:bg-off-white hover:text-near-black transition-all duration-300 shadow-glow-khaki inline-block cursor-pointer"
+                className="w-full sm:w-auto px-8 sm:px-10 py-4 bg-khaki text-near-black font-geo font-bold text-sm sm:text-base tracking-[0.2em] uppercase clip-chamfer-btn hover:bg-off-white hover:text-near-black transition-all duration-300 shadow-glow-khaki inline-block cursor-pointer"
               >
                 GET OPTIMIZED
               </button>
             </div>
+
+            <button
+              type="button"
+              onClick={() => openApplicationModal("live-video-session")}
+              className="w-full sm:w-auto inline-flex items-center justify-center space-x-2.5 px-6 sm:px-8 py-3.5 sm:py-4 bg-near-black/90 border-2 border-khaki text-off-white font-geo font-black text-xs sm:text-sm tracking-[0.16em] uppercase clip-chamfer-btn hover:bg-khaki hover:text-near-black transition-all duration-300 shadow-[0_0_25px_rgba(181,168,120,0.3)] cursor-pointer group"
+            >
+              <span className="w-2.5 h-2.5 rounded-full bg-khaki group-hover:bg-near-black animate-pulse" />
+              <span>LIVE VIDEO SESSION</span>
+              <span className="px-2 py-0.5 bg-khaki text-near-black group-hover:bg-near-black group-hover:text-khaki font-mono text-xs font-black transition-colors">
+                ₹800/HR
+              </span>
+            </button>
           </div>
 
           {/* 4 Iconic Healthspan Pillars (Matching Reference Image 1) */}
